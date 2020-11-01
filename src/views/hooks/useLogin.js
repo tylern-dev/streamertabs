@@ -59,7 +59,7 @@ const useLogin = () => {
 
   const handleUserLogin = () => {
     chrome.identity.launchWebAuthFlow({
-      'url': `https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TWITCH_CLIENT_ID}&redirect_uri=https://mgcpdenifdkbcploebmgblkfjfboeenn.chromiumapp.org/provider_cb&scope=viewing_activity_read&force_verify=true`, 'interactive': true
+      'url': `https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TWITCH_CLIENT_ID}&redirect_uri=https://haphafgkaikjkbhjimhkkhekjmhnjfef.chromiumapp.org/provider_cb&scope=viewing_activity_read&force_verify=true`, 'interactive': true
     }, (redirect_url) => {
       buildAccessUrl(redirect_url)
         .then(() =>{
