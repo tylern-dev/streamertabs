@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import SettingBtn from '../../icons/settings.svg'
 import useLogin from '../hooks/useLogin'
 import useTwitchUsers from '../hooks/useTwitchUsers'
+import StreamInfo from './stream-info'
 
 
 
@@ -39,11 +40,10 @@ const Container = styled.div`
 
 const App = () => {
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
-  const { userId } = userData
+  const { userId, displayName, profileImageUrl } = userData
   const { userFollows } = useTwitchUsers({userId})
+  console.log('userFollows', userFollows)
 
-  console.log('isLoggedIn', isLoggedIn)
-  console.log('user Data --->',userData)
 
 
 
@@ -71,15 +71,18 @@ const App = () => {
         <ButtonGroup>
           {/* <Button>Add</Button> */}
           <Button onClick={() => handleGoToOptionsPage()}><Image src={SettingBtn} alt="settings-button"/></Button>
+          <button onClick={() => isLoggedIn ? handleLogout() : handleUserLogin()}>{isLoggedIn ? 'Logout' : 'Login to Twitch'}</button>
         </ButtonGroup>
       </Header>
 
       <StreamerSection>
-        <button onClick={() =>  handleOpenAllStreamerTabs(streamers) }>Open all</button>
-        <button onClick={() => isLoggedIn ? handleLogout() : handleUserLogin()}>{isLoggedIn ? 'Logout' : 'Login to Twitch'}</button>
-        <ul>
+        {/* <button onClick={() =>  handleOpenAllStreamerTabs(streamers) }>Open all</button> */}
 
-        </ul>
+
+        {isLoggedIn &&
+          <StreamInfo displayName={displayName} profileImageUrl={profileImageUrl} userFollowsData={userFollows}/>
+        }
+
       </StreamerSection>
     </Container>
 

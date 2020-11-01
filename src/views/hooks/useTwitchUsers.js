@@ -15,7 +15,7 @@ const useTwitchUsers = ({userId}) => {
             accessToken: response[T_TKN],
           })
             .then(data => {
-              console.log('New Fetch', data)
+              setUserFollows(data)
             })
             .catch(error => new Error(error))
         }
