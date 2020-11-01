@@ -2,7 +2,8 @@ import React, {useState} from 'react'
 import styled from 'styled-components'
 import SettingBtn from '../../icons/settings.svg'
 import useLogin from '../hooks/useLogin'
-import { TWITCH_CLIENT_ID, TWITCH_USERS_URL} from '../../consts'
+import useTwitchUsers from '../hooks/useTwitchUsers'
+
 
 
 const Header = styled.header`
@@ -38,6 +39,8 @@ const Container = styled.div`
 
 const App = () => {
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
+  const { userId } = userData
+  const { userFollows } = useTwitchUsers({userId})
 
   console.log('isLoggedIn', isLoggedIn)
   console.log('user Data --->',userData)
