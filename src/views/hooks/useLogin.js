@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import {T_TKN, TWITCH_CLIENT_ID, TWITCH_USERS_URL, TWITCH_VALIDATE_URL, REVOKE_TWITCH_URL} from '../../consts'
+import { postApi } from '../../fetchUtil'
 
 const useLogin = () => {
 
@@ -25,11 +26,6 @@ const useLogin = () => {
               profileImageUrl: profile_image_url
             })
             setIsLoggedIn(true)
-            // chrome.storage.sync.set({
-            //   'twitch_id': id,
-            //   'twitch_user_name': display_name,
-            //   'img_url': profile_image_url
-            // });
           })
 
         }
@@ -59,7 +55,7 @@ const useLogin = () => {
 
   const handleUserLogin = () => {
     chrome.identity.launchWebAuthFlow({
-      'url': `https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TWITCH_CLIENT_ID}&redirect_uri=https://mgcpdenifdkbcploebmgblkfjfboeenn.chromiumapp.org/provider_cb&scope=viewing_activity_read&force_verify=true`, 'interactive': true
+      'url': `https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TWITCH_CLIENT_ID}&redirect_uri=https://${chrome.runtime.id}.chromiumapp.org/provider_cb&scope=viewing_activity_read&force_verify=true`, 'interactive': true
     }, (redirect_url) => {
       buildAccessUrl(redirect_url)
         .then(() =>{

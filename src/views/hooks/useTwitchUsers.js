@@ -4,7 +4,7 @@ import { getApi} from '../../fetchUtil'
 
 
 const useTwitchUsers = ({userId}) => {
-  console.log(userId)
+
   const [userFollows, setUserFollows] = useState()
   useEffect(() => {
     if(userId){
