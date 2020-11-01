@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { TWITCH_USERS_FOLLOWS, T_TKN, TWITCH_CLIENT_ID } from '../../consts'
+import { getApi} from '../../fetchUtil'
 
 
 const useTwitchUsers = ({userId}) => {
@@ -9,19 +10,14 @@ const useTwitchUsers = ({userId}) => {
     if(userId){
       chrome.storage.local.get([T_TKN], (response) => {
         if(response[T_TKN]) {
-          fetch(TWITCH_USERS_FOLLOWS(userId), {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${response[T_TKN]}`,
-              'Client-Id': `${TWITCH_CLIENT_ID}`
-            }
-          }).then((response) => {
-            if(response.status === 200){
-              response.json().then(data =>{
-                console.log(data)
-              })
-            }
+          getApi({
+            url: TWITCH_USERS_FOLLOWS(userId),
+            accessToken: response[T_TKN],
           })
+            .then(data => {
+              console.log('New Fetch', data)
+            })
+            .catch(error => new Error(error))
         }
 
       })
