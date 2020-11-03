@@ -16,18 +16,18 @@ function json(response) {
 
 export const getApi = ({url='', accessToken, queryParams={}, method='', isOauth,}) => {
  return new Promise((resolve, reject)=>{
-   console.log(url, accessToken)
+  //  console.log(url, accessToken)
    fetch(url,{
       method: 'GET',
       headers:{
-        'Authorization': `${isOauth ? 'OAuth ' : 'Bearer '}${accessToken}`,
+        'Authorization': `Bearer ${accessToken}`,
         'Client-Id': `${TWITCH_CLIENT_ID}`,
       }
     })
       .then(status)
       .then(json)
       .then((data) => {
-        console.log('New Data', data)
+        // console.log('New Data', data)
         resolve(data)
       })
       .catch(error => reject(new Error(error)))

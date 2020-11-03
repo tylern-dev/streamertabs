@@ -42,7 +42,7 @@ const App = () => {
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
   const { userId, displayName, profileImageUrl } = userData
   const { userFollows } = useTwitchUsers({userId})
-  console.log('userFollows', userFollows)
+  // console.log('userFollows', userFollows)
 
 
 
@@ -61,9 +61,6 @@ const App = () => {
     }
   }
 
-
-
-  const streamers = ["pestily", "klean", "tweak"]
   return (
     <Container>
       <Header>

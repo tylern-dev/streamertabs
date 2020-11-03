@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-
+import useStreams from '../hooks/useStreams'
+import { extractStreamerIds } from '../../utils'
 const DisplayNameContainer = styled.div.attrs({as: 'a'})`
   display: grid;
   grid-template-columns:auto 1fr;
@@ -17,9 +18,13 @@ const StyledDisplayName = styled.h2`
 `
 
 const StreamInfo = ({displayName, profileImageUrl, userFollowsData={}}) => {
-  console.log(userFollowsData)
-  const { data =[] } = userFollowsData
-  console.log('DATA', data)
+  // console.log(userFollowsData)
+  const { data: streamerData =[] } = userFollowsData
+
+  const streamerIds = extractStreamerIds(streamerData)
+
+  // const {streams, offlineStreamIds} = useStreams(streamerIds)
+  // console.log('STREAMS', streams)
   return(
     <>
       <DisplayNameContainer href="https://twitch.tv" target="_blank">
@@ -27,10 +32,11 @@ const StreamInfo = ({displayName, profileImageUrl, userFollowsData={}}) => {
         <StyledDisplayName onClick>{displayName}</StyledDisplayName>
       </DisplayNameContainer>
       <ul>
-        {data && data.map(({to_name}) =>
+        {streamerData && streamerData.map(({to_name}) =>
           <li>{to_name}</li>
         )}
       </ul>
+      <button>More...</button>
     </>
   )
 }
