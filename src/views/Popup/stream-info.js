@@ -17,26 +17,49 @@ const StyledDisplayName = styled.h2`
   font-size: 2em;
 `
 
-const StreamInfo = ({displayName, profileImageUrl, userFollowsData={}}) => {
-  // console.log(userFollowsData)
+const StyledUl = styled.ul`
+  list-style-type: none;
+  display: grid;
+  grid-gap: 16px;
+  padding: 0;
+`
+
+const StyledListItem = styled.li`
+  display: grid;
+  grid-gap: 8px;
+  border: 2px solid #000;
+`
+
+const StreamInfo = ({displayName, profileImageUrl, userFollowsData={}, paginationCursor=[], liveStreams=[]}) => {
   const { data: streamerData =[] } = userFollowsData
 
-  const streamerIds = extractStreamerIds(streamerData)
 
-  // const {streams, offlineStreamIds} = useStreams(streamerIds)
-  // console.log('STREAMS', streams)
+
+
+
   return(
     <>
       <DisplayNameContainer href="https://twitch.tv" target="_blank">
         <StyledProfileImage src={profileImageUrl} alt="profile" />
         <StyledDisplayName onClick>{displayName}</StyledDisplayName>
       </DisplayNameContainer>
-      <ul>
-        {streamerData && streamerData.map(({to_name}) =>
-          <li>{to_name}</li>
+
+      <StyledUl>
+        {liveStreams && liveStreams.map(({user_name, title, thumbnail_url}) =>{
+          thumbnail_url = thumbnail_url.replace('-{width}x{height}', '')
+          return(
+            <StyledListItem>
+              <div>
+                <StyledProfileImage src={thumbnail_url} alt={user_name} />
+                <b>{user_name}</b>
+              </div>
+                {title}
+            </StyledListItem>
+          )
+          }
         )}
-      </ul>
-      <button>More...</button>
+      </StyledUl>
+      {/* <button onClick={() => loadMoreFollows()} disabled={paginationCursor.length === 0}>More...</button> */}
     </>
   )
 }

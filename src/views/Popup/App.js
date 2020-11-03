@@ -1,3 +1,4 @@
+
 import React, {useState} from 'react'
 import styled from 'styled-components'
 import SettingBtn from '../../icons/settings.svg'
@@ -41,7 +42,8 @@ const Container = styled.div`
 const App = () => {
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
   const { userId, displayName, profileImageUrl } = userData
-  const { userFollows } = useTwitchUsers({userId})
+  const { userFollows, streams, userFollowsCursors } = useTwitchUsers({userId})
+
   // console.log('userFollows', userFollows)
 
 
@@ -77,7 +79,13 @@ const App = () => {
 
 
         {isLoggedIn &&
-          <StreamInfo displayName={displayName} profileImageUrl={profileImageUrl} userFollowsData={userFollows}/>
+          <StreamInfo 
+            displayName={displayName} 
+            profileImageUrl={profileImageUrl} 
+            userFollowsData={userFollows} 
+            liveStreams={streams} 
+            paginationCursor={userFollowsCursors}
+          />
         }
 
       </StreamerSection>
