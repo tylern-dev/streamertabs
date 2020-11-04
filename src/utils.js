@@ -24,19 +24,5 @@ export const buildStreamsQueryUrl = ({query, first, after: cursor, liveOnly=fals
 }
 
 export const reconstructUsersObj = ({userData, dataToAdd}) => {
-
-  const restructuredObj = userData.reduce((acc, ud) => {
-    let test
-    dataToAdd.forEach((dta)=>{
-      if(ud.to_id === dta.user_id){
-        test = ([...acc,{ ...ud,...dta}])
-      }
-      else {
-        test = ([...acc, {...ud}])
-      }
-    })
-    return test
-  },[])
-
-  return restructuredObj
+  return userData.map(ud => ({...ud, ...dataToAdd.find(dta => dta.user_id === ud.to_id)}))
 }

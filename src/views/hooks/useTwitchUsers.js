@@ -63,7 +63,7 @@ const useTwitchUsers = ({userId,  first=20}) => {
         })
           .then(({data, pagination}) => {
             if(data){
-              reconstructUsersObj({userData: userFollows, dataToAdd: data})
+              console.log(reconstructUsersObj({userData: userFollows, dataToAdd: data}))
 
             }
             setIsStreamsLoading(false)
