@@ -89,7 +89,7 @@ const App = () => {
 
           <OfflineStreams offlineChannels={offlineChannels} />
           </>
-        }
+        
 
       </StreamerSection>
     </Container>

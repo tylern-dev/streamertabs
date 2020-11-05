@@ -10,13 +10,11 @@ function status(response) {
 }
 
 function json(response) {
-
   return response.json()
 }
 
 export const getApi = ({url='', accessToken, queryParams={}, method='', isOauth,}) => {
  return new Promise((resolve, reject)=>{
-  //  console.log(url, accessToken)
    fetch(url,{
       method: 'GET',
       headers:{
@@ -27,7 +25,6 @@ export const getApi = ({url='', accessToken, queryParams={}, method='', isOauth,
       .then(status)
       .then(json)
       .then((data) => {
-        // console.log('New Data', data)
         resolve(data)
       })
       .catch(error => reject(new Error(error)))

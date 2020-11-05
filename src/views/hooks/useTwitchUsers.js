@@ -49,6 +49,7 @@ const useTwitchUsers = ({userId,  first=20}) => {
 
   const loadUsersWithStreams = useCallback(({after}) => {
     const followedUserIds = (userFollows && userFollows?.map(({to_id}) => to_id)) || []
+    console.log(followedUserIds)
     chrome.storage.local.get([T_TKN], (response) => {
       setIsStreamsLoading(true)
       getApi({
