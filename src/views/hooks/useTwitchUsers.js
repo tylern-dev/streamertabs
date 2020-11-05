@@ -10,7 +10,9 @@ const useTwitchUsers = ({userId,  first=20}) => {
   const [userFollows, setUserFollows] = useState([])
   const [streams, setStreams ] = useState([])
   const [isUsersLoading, setIsUsersLoading ] = useState(true)
-  const [isStreamsLoading, setIsStreamsLoading] = useState()
+  const [isStreamsLoading, setIsStreamsLoading] = useState(true)
+  const [userStreamingData, setUserStreamingData] = useState([])
+  const [ isUsersWithStreamsLoading, setIsUsersWithStreamsLoading ] = useState(true)
 
 
 
@@ -44,6 +46,33 @@ const useTwitchUsers = ({userId,  first=20}) => {
     })
   },[first, userId])
 
+
+  const loadUsersWithStreams = useCallback(({after}) => {
+    const followedUserIds = (userFollows && userFollows?.map(({to_id}) => to_id)) || []
+    chrome.storage.local.get([T_TKN], (response) => {
+      setIsStreamsLoading(true)
+      getApi({
+        url: buildStreamsUrl({user_id: followedUserIds, first }),
+        accessToken: response[T_TKN],
+      })
+        .then(({data, pagination}) => {
+          data.forEach((u) =>{
+            setStreams(users => [...users, u])
+          })
+          if(pagination?.cursor){
+            loadUsersWithStreams({after: pagination?.cursor})
+          } else {
+            setIsStreamsLoading(false)
+          }
+        })
+        .catch(error => {
+          setIsStreamsLoading(false)
+          new Error(error)
+        })
+    })
+  }, [first, userFollows ])
+
+
   useEffect(() => {
     if(userId){
       loadUserFollows({})
@@ -52,41 +81,28 @@ const useTwitchUsers = ({userId,  first=20}) => {
 
 
   useEffect(() => {
-    const followedUserIds = (userFollows && userFollows?.map(({to_id}) => to_id)) || []
-
-    if(userFollows && followedUserIds.length > 0 && !isUsersLoading){
-      chrome.storage.local.get([T_TKN], (response) => {
-        setIsStreamsLoading(true)
-        getApi({
-          url: buildStreamsUrl({user_id: followedUserIds, first }),
-          accessToken: response[T_TKN],
-        })
-          .then(({data, pagination}) => {
-            if(data){
-              console.log(reconstructUsersObj({userData: userFollows, dataToAdd: data}))
-
-            }
-            setIsStreamsLoading(false)
-            setStreams(data)
-            // setCursors(cursor => ({
-            //   ...cursor,
-
-            // }))
-          })
-          .catch(error => {
-            setIsStreamsLoading(false)
-            new Error(error)
-          })
-
-      })
+    if(userFollows  && !isUsersLoading){
+      loadUsersWithStreams({})
     }
-  }, [userFollows, first, isUsersLoading])
+  }, [userFollows, first, isUsersLoading,  loadUsersWithStreams])
 
+
+  useEffect(() => {
+    if(!isStreamsLoading && streams.length > 0){
+      setUserStreamingData(reconstructUsersObj({userData: userFollows, dataToAdd: streams}))
+    }
+  }, [streams, userFollows, isStreamsLoading])
+
+
+  
+  const isLoading = [isUsersLoading, isStreamsLoading].every(Boolean)
 
   return {
     userFollows,
     streams,
     loadUserFollows,
+    userStreamingData,
+    isLoading
 
   }
 }

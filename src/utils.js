@@ -8,7 +8,7 @@ export const  buildFollowsUrl = ({after, from_id, first}) => {
   return `${TWITCH_USERS_FOLLOWS}?from_id=${from_id}${after ? `&after=${after}` : ''}${first ? `&first=${first}` : ''}`
 }
 
-export const buildStreamsUrl = ({user_id, user_login, game_id, first=20, before, after}) => {
+export const buildStreamsUrl = ({user_id, user_login, game_id, first, before, after}) => {
 
   if(user_id instanceof Array){
     user_id = user_id.join('&user_id=')

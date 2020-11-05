@@ -1,20 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import useStreams from '../hooks/useStreams'
-import { extractStreamerIds } from '../../utils'
-const DisplayNameContainer = styled.div.attrs({as: 'a'})`
-  display: grid;
-  grid-template-columns:auto 1fr;
-  grid-gap: 16px;
-  align-items: center;
-`
+import { TWITCH_TV } from '../../consts'
+import UserHeader from '../../components/user-header'
+
+
 
 const StyledProfileImage = styled.img`
-  max-width: 38px;
-`
-
-const StyledDisplayName = styled.h2`
-  font-size: 2em;
+  max-width: 48px;
 `
 
 const StyledUl = styled.ul`
@@ -30,32 +22,58 @@ const StyledListItem = styled.li`
   border: 2px solid #000;
 `
 
-const StreamInfo = ({displayName, profileImageUrl, userFollowsData={}, paginationCursor=[], liveStreams=[]}) => {
-  const { data: streamerData =[] } = userFollowsData
+const StyledUserName = styled.b`
+  font-size: 2em;
+`
 
+const StreamInfo = ({
+  displayName,
+  profileImageUrl,
+  paginationCursor=[], 
+  channels=[],
+  isLoading
+}) => {
+  
+  const liveStreams = channels.filter(channel => channel?.type === 'live')
 
+  console.log(liveStreams)
 
+  const openAllLiveStreams = () => {
+    if(liveStreams){
+      liveStreams.forEach((stream) => {
+        chrome.tabs.create({
+          url: `${TWITCH_TV}${stream.user_name.toLowerCase()}`
+        })
+      })
+    }
+  }
 
+  const openLiveStream = ({user_name}) => {
+    chrome.tabs.create({
+      url: `${TWITCH_TV}${user_name.toLowerCase()}`
+    })
+  }
 
+  if(isLoading) return (<h1>Loading ...</h1>)
   return(
     <>
-      <DisplayNameContainer href="https://twitch.tv" target="_blank">
-        <StyledProfileImage src={profileImageUrl} alt="profile" />
-        <StyledDisplayName onClick>{displayName}</StyledDisplayName>
-      </DisplayNameContainer>
-
+      <UserHeader displayName={displayName} profileImageUrl={profileImageUrl} />
+      <button onClick={() => openAllLiveStreams()}>Open all streams</button>
       <StyledUl>
-        {liveStreams && liveStreams.map(({user_name, title, thumbnail_url}) =>{
-          thumbnail_url = thumbnail_url.replace('-{width}x{height}', '')
-          return(
-            <StyledListItem>
-              <div>
-                <StyledProfileImage src={thumbnail_url} alt={user_name} />
-                <b>{user_name}</b>
-              </div>
-                {title}
-            </StyledListItem>
-          )
+        {liveStreams && liveStreams.map(({user_name, title, thumbnail_url, type, user_id}) =>{
+
+            thumbnail_url = thumbnail_url.replace('-{width}x{height}', '')
+            return(
+              <StyledListItem onClick={() => openLiveStream({user_name})} key={user_id}>
+                <div>
+                  <StyledProfileImage src={thumbnail_url} alt={user_name} />
+                  <StyledUserName>{user_name}</StyledUserName>
+                </div>
+                  {title}
+              </StyledListItem>
+            )
+
+          
           }
         )}
       </StyledUl>

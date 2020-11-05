@@ -5,7 +5,7 @@ import SettingBtn from '../../icons/settings.svg'
 import useLogin from '../hooks/useLogin'
 import useTwitchUsers from '../hooks/useTwitchUsers'
 import StreamInfo from './stream-info'
-
+import OfflineStreams from './offline-streams'
 
 
 const Header = styled.header`
@@ -26,6 +26,7 @@ const Button = styled.button`
 `
 const ButtonGroup = styled.div`
   display: grid;
+  grid-template-columns: auto auto;
   align-items: center;
   justify-content: right;
 `
@@ -42,11 +43,11 @@ const Container = styled.div`
 const App = () => {
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
   const { userId, displayName, profileImageUrl } = userData
-  const { userFollows, streams, userFollowsCursors } = useTwitchUsers({userId})
+  const { userFollows, userStreamingData, isLoading } = useTwitchUsers({userId})
 
-  // console.log('userFollows', userFollows)
+  // console.log('userFollows', userStreamingData)
 
-
+  const offlineChannels = userStreamingData.filter(channel => channel.type !== 'live')
 
 
   const handleOpenAllStreamerTabs = (streamerArray) => {
@@ -77,15 +78,17 @@ const App = () => {
       <StreamerSection>
         {/* <button onClick={() =>  handleOpenAllStreamerTabs(streamers) }>Open all</button> */}
 
-
-        {isLoggedIn &&
+        <>
           <StreamInfo 
             displayName={displayName} 
             profileImageUrl={profileImageUrl} 
             userFollowsData={userFollows} 
-            liveStreams={streams} 
-            paginationCursor={userFollowsCursors}
+            channels={userStreamingData} 
+            isLoading={isLoading}
           />
+
+          <OfflineStreams offlineChannels={offlineChannels} />
+          </>
         }
 
       </StreamerSection>
