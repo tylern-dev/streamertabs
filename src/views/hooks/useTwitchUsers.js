@@ -1,19 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import {  T_TKN } from '../../consts'
 import { getApi} from '../../fetchUtil'
-import { buildFollowsUrl, buildStreamsQueryUrl, buildStreamsUrl, reconstructUsersObj } from '../../utils'
+import { buildFollowsUrl, buildStreamsQueryUrl, buildStreamsUrl, chunkArray, reconstructUsersObj } from '../../utils'
 
 
 
-const useTwitchUsers = ({userId,  first=20}) => {
+const useTwitchUsers = ({userId, isLoggedIn,  first=100}) => {
 
   const [userFollows, setUserFollows] = useState([])
   const [streams, setStreams ] = useState([])
   const [isUsersLoading, setIsUsersLoading ] = useState(true)
   const [isStreamsLoading, setIsStreamsLoading] = useState(true)
   const [userStreamingData, setUserStreamingData] = useState([])
-  const [ isUsersWithStreamsLoading, setIsUsersWithStreamsLoading ] = useState(true)
-
 
 
   const loadUserFollows = useCallback(({after}) => {
@@ -46,33 +44,33 @@ const useTwitchUsers = ({userId,  first=20}) => {
     })
   },[first, userId])
 
-
+  
   const loadUsersWithStreams = useCallback(({after}) => {
     const followedUserIds = (userFollows && userFollows?.map(({to_id}) => to_id)) || []
-    console.log(followedUserIds)
-    chrome.storage.local.get([T_TKN], (response) => {
-      setIsStreamsLoading(true)
-      getApi({
-        url: buildStreamsUrl({user_id: followedUserIds, first }),
-        accessToken: response[T_TKN],
-      })
-        .then(({data, pagination}) => {
-          data.forEach((u) =>{
-            setStreams(users => [...users, u])
-          })
-          if(pagination?.cursor){
-            loadUsersWithStreams({after: pagination?.cursor})
-          } else {
-            setIsStreamsLoading(false)
-          }
-        })
-        .catch(error => {
-          setIsStreamsLoading(false)
-          new Error(error)
-        })
-    })
-  }, [first, userFollows ])
 
+    const chunkedArray = chunkArray(followedUserIds, 1)
+    chunkedArray.forEach(chunk => {
+      chrome.storage.local.get([T_TKN], (response) => {
+        setIsStreamsLoading(true)
+        getApi({
+          url: buildStreamsUrl({user_id: chunk }),
+          accessToken: response[T_TKN],
+        })
+          .then(({data, pagination}) => {
+            data.forEach((u) =>{
+              setStreams(users => [...users, u])
+            })
+            setIsStreamsLoading(false)
+            
+          })
+          .catch(error => {
+            setIsStreamsLoading(false)
+            new Error(error)
+          })
+      })
+
+    })
+  }, [ userFollows ])
 
   useEffect(() => {
     if(userId){
@@ -94,6 +92,13 @@ const useTwitchUsers = ({userId,  first=20}) => {
     }
   }, [streams, userFollows, isStreamsLoading])
 
+  useEffect(() => {
+    if(!isLoggedIn){
+      setUserFollows([])
+      setStreams([])
+      setUserStreamingData([])
+    }
+  }, [isLoggedIn])
 
   
   const isLoading = [isUsersLoading, isStreamsLoading].every(Boolean)

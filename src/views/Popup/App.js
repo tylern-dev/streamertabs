@@ -43,7 +43,7 @@ const Container = styled.div`
 const App = () => {
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
   const { userId, displayName, profileImageUrl } = userData
-  const { userFollows, userStreamingData, isLoading } = useTwitchUsers({userId})
+  const { userFollows, userStreamingData, isLoading } = useTwitchUsers({userId, isLoggedIn})
 
   // console.log('userFollows', userStreamingData)
 
@@ -75,23 +75,26 @@ const App = () => {
         </ButtonGroup>
       </Header>
 
-      <StreamerSection>
-        {/* <button onClick={() =>  handleOpenAllStreamerTabs(streamers) }>Open all</button> */}
 
-        <>
-          <StreamInfo 
-            displayName={displayName} 
-            profileImageUrl={profileImageUrl} 
-            userFollowsData={userFollows} 
-            channels={userStreamingData} 
-            isLoading={isLoading}
-          />
+      {isLoggedIn &&
+        <StreamerSection>
+          {/* <button onClick={() =>  handleOpenAllStreamerTabs(streamers) }>Open all</button> */}
 
-          <OfflineStreams offlineChannels={offlineChannels} />
-          </>
-        
+          <>
+            <StreamInfo 
+              displayName={displayName} 
+              profileImageUrl={profileImageUrl} 
+              userFollowsData={userFollows} 
+              channels={userStreamingData} 
+              isLoading={isLoading}
+            />
 
-      </StreamerSection>
+            <OfflineStreams offlineChannels={offlineChannels} />
+            </>
+          
+
+        </StreamerSection>
+      }
     </Container>
 
   )

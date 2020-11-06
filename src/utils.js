@@ -26,3 +26,13 @@ export const buildStreamsQueryUrl = ({query, first, after: cursor, liveOnly=fals
 export const reconstructUsersObj = ({userData, dataToAdd}) => {
   return userData.map(ud => ({...ud, ...dataToAdd.find(dta => dta.user_id === ud.to_id)}))
 }
+
+export const chunkArray = (array, size)=>{
+  const result = []
+  for (let i = 0; i < array.length; i += size){
+    const chunk = array.slice(i, i + size)
+    result.push(chunk)
+  }
+
+  return result
+}

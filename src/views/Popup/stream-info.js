@@ -36,7 +36,6 @@ const StreamInfo = ({
   
   const liveStreams = channels.filter(channel => channel?.type === 'live')
 
-  console.log(liveStreams)
 
   const openAllLiveStreams = () => {
     if(liveStreams){
