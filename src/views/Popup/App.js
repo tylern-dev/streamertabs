@@ -81,17 +81,17 @@ const App = () => {
           {/* <button onClick={() =>  handleOpenAllStreamerTabs(streamers) }>Open all</button> */}
 
           <>
-            <StreamInfo 
-              displayName={displayName} 
-              profileImageUrl={profileImageUrl} 
-              userFollowsData={userFollows} 
-              channels={userStreamingData} 
+            <StreamInfo
+              displayName={displayName}
+              profileImageUrl={profileImageUrl}
+              userFollowsData={userFollows}
+              channels={userStreamingData}
               isLoading={isLoading}
             />
 
             <OfflineStreams offlineChannels={offlineChannels} />
             </>
-          
+
 
         </StreamerSection>
       }

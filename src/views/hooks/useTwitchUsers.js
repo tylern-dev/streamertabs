@@ -1,17 +1,18 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback,  } from 'react'
 import {  T_TKN } from '../../consts'
 import { getApi} from '../../fetchUtil'
-import { buildFollowsUrl, buildStreamsQueryUrl, buildStreamsUrl, chunkArray, reconstructUsersObj } from '../../utils'
-
-
+import { buildGamesUrl, buildFollowsUrl, buildStreamsQueryUrl, buildStreamsUrl, chunkArray, reconstructUsersObj } from '../../utils'
 
 const useTwitchUsers = ({userId, isLoggedIn,  first=100}) => {
 
   const [userFollows, setUserFollows] = useState([])
   const [streams, setStreams ] = useState([])
+  const [userStreamingData, setUserStreamingData] = useState([])
+  const [gameData, setGameData] = useState([])
+  const [userStreamsGamingData, setUserStreamsGamingData] = useState([])
   const [isUsersLoading, setIsUsersLoading ] = useState(true)
   const [isStreamsLoading, setIsStreamsLoading] = useState(true)
-  const [userStreamingData, setUserStreamingData] = useState([])
+  const [ isGamesLoading, setIsGamesLoading ]= useState(true)
 
 
   const loadUserFollows = useCallback(({after}) => {
@@ -44,14 +45,14 @@ const useTwitchUsers = ({userId, isLoggedIn,  first=100}) => {
     })
   },[first, userId])
 
-  
+
   const loadUsersWithStreams = useCallback(({after}) => {
     const followedUserIds = (userFollows && userFollows?.map(({to_id}) => to_id)) || []
 
-    const chunkedArray = chunkArray(followedUserIds, 1)
+    const chunkedArray = chunkArray(followedUserIds, 50)
+    setIsStreamsLoading(true)
     chunkedArray.forEach(chunk => {
       chrome.storage.local.get([T_TKN], (response) => {
-        setIsStreamsLoading(true)
         getApi({
           url: buildStreamsUrl({user_id: chunk }),
           accessToken: response[T_TKN],
@@ -60,8 +61,8 @@ const useTwitchUsers = ({userId, isLoggedIn,  first=100}) => {
             data.forEach((u) =>{
               setStreams(users => [...users, u])
             })
-            setIsStreamsLoading(false)
-            
+
+
           })
           .catch(error => {
             setIsStreamsLoading(false)
@@ -70,7 +71,31 @@ const useTwitchUsers = ({userId, isLoggedIn,  first=100}) => {
       })
 
     })
+    setIsStreamsLoading(false)
   }, [ userFollows ])
+
+  const getGames = useCallback(() => {
+    if(streams){
+      const gameIds = streams?.map(game => game.game_id)
+      const chunkedArray = chunkArray(gameIds, 50)
+      chunkedArray.forEach(chunk => {
+        setIsGamesLoading(true)
+        chrome.storage.local.get([T_TKN], (response) =>{
+          getApi({
+            url: buildGamesUrl({gameId: chunk}),
+            accessToken: response[T_TKN]
+          }).then(({data}) =>{
+
+            data.forEach((d)=>{
+              setGameData(games => [...games, d])
+            })
+          })
+        })
+
+      })
+      setIsGamesLoading(false)
+    }
+  },[streams])
 
   useEffect(() => {
     if(userId){
@@ -85,12 +110,24 @@ const useTwitchUsers = ({userId, isLoggedIn,  first=100}) => {
     }
   }, [userFollows, first, isUsersLoading,  loadUsersWithStreams])
 
+  useEffect(() => {
+    if(streams && !isStreamsLoading){
+      getGames()
+    }
+  }, [getGames, streams, isStreamsLoading])
+
 
   useEffect(() => {
-    if(!isStreamsLoading && streams.length > 0){
-      setUserStreamingData(reconstructUsersObj({userData: userFollows, dataToAdd: streams}))
+    if(!isStreamsLoading && !isGamesLoading && streams.length > 0 && gameData.length > 0){
+      setUserStreamingData(reconstructUsersObj({userData: userFollows, streamsToAdd: streams, gamesToAdd:gameData}))
     }
-  }, [streams, userFollows, isStreamsLoading])
+  }, [streams, userFollows, isStreamsLoading, gameData, isGamesLoading])
+
+  // useEffect(() => {
+  //   if(!isGamesLoading && gameData.length > 0){
+  //     setUserStreamsGamingData(reconstructUsersObj({userData: userStreamingData, dataToAdd: gameData}))
+  //   }
+  // }, [gameData, isGamesLoading, userStreamingData])
 
   useEffect(() => {
     if(!isLoggedIn){
@@ -100,9 +137,8 @@ const useTwitchUsers = ({userId, isLoggedIn,  first=100}) => {
     }
   }, [isLoggedIn])
 
-  
-  const isLoading = [isUsersLoading, isStreamsLoading].every(Boolean)
-
+  console.log('userStreaming', userStreamingData)
+  const isLoading = [isUsersLoading, isStreamsLoading, isGamesLoading].every(Boolean)
   return {
     userFollows,
     streams,

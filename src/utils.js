@@ -1,4 +1,4 @@
-import { TWITCH_USERS_FOLLOWS, TWITCH_GET_STREAMS, TWITCH_QUERY_STREAMS } from './consts'
+import { TWITCH_USERS_FOLLOWS, TWITCH_GET_STREAMS, TWITCH_QUERY_STREAMS, TWITCH_GAMES } from './consts'
 
 export const extractStreamerIds = (usersData) => {
   return usersData.map(userData => userData.to_id)
@@ -23,8 +23,27 @@ export const buildStreamsQueryUrl = ({query, first, after: cursor, liveOnly=fals
   return `${TWITCH_QUERY_STREAMS}?${query ? `query=${query}`:''}${first ? `&first=${first}` : ''}${cursor ? `&after=${cursor}` : ''}&live_only=${liveOnly}`
 }
 
-export const reconstructUsersObj = ({userData, dataToAdd}) => {
-  return userData.map(ud => ({...ud, ...dataToAdd.find(dta => dta.user_id === ud.to_id)}))
+export const buildGamesUrl = ({gameId}) => {
+  if(gameId instanceof Array){
+    gameId = gameId.join('&id=')
+  }
+  return `${TWITCH_GAMES}?${gameId ? `id=${gameId}` : ''}`
+}
+
+export const reconstructUsersObj = ({userData, streamsToAdd, gamesToAdd}) => {
+  return userData.map(ud => ({
+    ...ud,
+    ...streamsToAdd.find(dta => dta.user_id === ud.to_id),
+    ...gamesToAdd.find(gta => {
+        let result
+        streamsToAdd.forEach((sta) => {
+          if(sta.user_id === ud.to_id && gta.id === sta.game_id){
+            result = gta
+          }
+        })
+        return result
+    })
+  }))
 }
 
 export const chunkArray = (array, size)=>{
@@ -36,3 +55,5 @@ export const chunkArray = (array, size)=>{
 
   return result
 }
+
+

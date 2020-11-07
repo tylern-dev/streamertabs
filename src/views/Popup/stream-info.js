@@ -29,11 +29,11 @@ const StyledUserName = styled.b`
 const StreamInfo = ({
   displayName,
   profileImageUrl,
-  paginationCursor=[], 
+  paginationCursor=[],
   channels=[],
   isLoading
 }) => {
-  
+
   const liveStreams = channels.filter(channel => channel?.type === 'live')
 
 
@@ -60,11 +60,12 @@ const StreamInfo = ({
       <button onClick={() => openAllLiveStreams()}>Open all streams</button>
       <StyledUl>
         {liveStreams && liveStreams.map(({user_name, title, thumbnail_url, type, user_id}) =>{
-
+            // box_art_url = box_art_url.replace('-{width}x{height}', '')
             thumbnail_url = thumbnail_url.replace('-{width}x{height}', '')
             return(
               <StyledListItem onClick={() => openLiveStream({user_name})} key={user_id}>
                 <div>
+
                   <StyledProfileImage src={thumbnail_url} alt={user_name} />
                   <StyledUserName>{user_name}</StyledUserName>
                 </div>
@@ -72,7 +73,7 @@ const StreamInfo = ({
               </StyledListItem>
             )
 
-          
+
           }
         )}
       </StyledUl>
