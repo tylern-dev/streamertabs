@@ -33,7 +33,7 @@ const StreamInfo = ({
   const { userStreamingData, isLoading } = useTwitch()
 
 
-  console.log('userStreamingData ' , userStreamingData)
+  // console.log('userStreamingData ' , userStreamingData)
   const liveStreams = userStreamingData.filter(channel => channel?.type === 'live')
 
 

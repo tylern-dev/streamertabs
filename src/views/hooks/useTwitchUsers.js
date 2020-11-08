@@ -142,7 +142,7 @@ const useTwitchUsers = ({userId, isLoggedIn,  first=100}) => {
   return {
     userFollows,
     streams,
-    loadUserFollows,
+    // loadUserFollows,
     userStreamingData,
     isLoading
 

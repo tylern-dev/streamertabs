@@ -1,42 +1,50 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import {getApi} from '../../fetchUtil'
-import { T_TKN, TWITCH_GET_STREAMS } from '../../consts'
+import { T_TKN } from '../../consts'
+import { buildStreamsUrl, chunkArray } from '../../utils'
 
-const buildStreamsUrl = ({user_id, user_login, game_id, first=20, before, after:cursor}) => {
-  let userIds
-  if(user_id instanceof Array){
-    userIds = user_id.join('&user_id=')
-  }
-  return `${TWITCH_GET_STREAMS}?${user_id ? `${userIds}` : ''}${first ? `&first=${first}`: ''}${cursor ? `after=${cursor}` : ''}`
-}
 
-const useStreams = (user_id) => {
-  const [ streams, setStreams ] = useState([])
-  const [ offlineStreams, setOfflineStreams ] = useState([])
+const useStreams = ({userFollowsData, isUsersLoading}) => {
 
-  useEffect(() => {
-    if(user_id) {
-      chrome.storage.local.get([T_TKN], (response) =>{
-        if(response[T_TKN]){
+  const [ isStreamsLoading, setIsStreamsLoading ] = useState(true)
+  const [streamsData, setStreams] = useState([])
+
+  const loadUsersWithStreams = useCallback(() => {
+
+      const followedUserIds = (userFollowsData && userFollowsData?.map(({to_id}) => to_id)) || []
+
+      const chunkedArray = chunkArray(followedUserIds, 75)
+      chunkedArray.forEach(chunk => {
+        setIsStreamsLoading(true)
+        chrome.storage.local.get([T_TKN], (response) => {
           getApi({
-            url: buildStreamsUrl({user_id}),
+            url: buildStreamsUrl({user_id: chunk }),
             accessToken: response[T_TKN],
           })
-            .then((data) => {
-              console.log('bad boy data', data)
-              // setStreams(data)
+            .then(({data, pagination}) => {
+              data.forEach((s) =>{
+                setStreams(streams => [...streams, s])
+              })
+              setIsStreamsLoading(false)
             })
-            .catch(error => new Error(error))
-        }
+            .catch(error => {
+              setIsStreamsLoading(false)
+              new Error(error)
+            })
+        })
+
       })
+  }, [ userFollowsData ])
+
+  useEffect(() => {
+    if(userFollowsData.length > 0 && !isUsersLoading){
+      loadUsersWithStreams()
     }
-  }, [user_id, setStreams])
-
-
-
+  }, [userFollowsData, isUsersLoading, loadUsersWithStreams])
 
   return {
-    streams
+    streamsData,
+    isStreamsLoading
   }
 }
 
