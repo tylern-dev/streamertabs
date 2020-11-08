@@ -6,8 +6,8 @@ import useLogin from '../hooks/useLogin'
 import useTwitchUsers from '../hooks/useTwitchUsers'
 import StreamInfo from './stream-info'
 import OfflineStreams from './offline-streams'
-
-
+import { useTwitch } from '../hooks/useTwitchProvider'
+import { TwitchProvider } from '../hooks/useTwitchProvider'
 const Header = styled.header`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -43,11 +43,11 @@ const Container = styled.div`
 const App = () => {
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
   const { userId, displayName, profileImageUrl } = userData
-  const { userFollows, userStreamingData, isLoading } = useTwitchUsers({userId, isLoggedIn})
+  // const { userFollows, userStreamingData, isLoading } = useTwitchUsers({userId, isLoggedIn})
 
   // console.log('userFollows', userStreamingData)
 
-  const offlineChannels = userStreamingData.filter(channel => channel.type !== 'live')
+  // const offlineChannels = userStreamingData.filter(channel => channel.type !== 'live')
 
 
   const handleOpenAllStreamerTabs = (streamerArray) => {
@@ -65,37 +65,39 @@ const App = () => {
   }
 
   return (
-    <Container>
-      <Header>
-        <Title>Twitch Tabs</Title>
-        <ButtonGroup>
-          {/* <Button>Add</Button> */}
-          <Button onClick={() => handleGoToOptionsPage()}><Image src={SettingBtn} alt="settings-button"/></Button>
-          <button onClick={() => isLoggedIn ? handleLogout() : handleUserLogin()}>{isLoggedIn ? 'Logout' : 'Login to Twitch'}</button>
-        </ButtonGroup>
-      </Header>
+    <TwitchProvider userId={userId} isLoggedIn={isLoggedIn}>
+      <Container>
+        <Header>
+          <Title>Twitch Tabs</Title>
+          <ButtonGroup>
+            {/* <Button>Add</Button> */}
+            <Button onClick={() => handleGoToOptionsPage()}><Image src={SettingBtn} alt="settings-button"/></Button>
+            <button onClick={() => isLoggedIn ? handleLogout() : handleUserLogin()}>{isLoggedIn ? 'Logout' : 'Login to Twitch'}</button>
+          </ButtonGroup>
+        </Header>
 
 
-      {isLoggedIn &&
-        <StreamerSection>
-          {/* <button onClick={() =>  handleOpenAllStreamerTabs(streamers) }>Open all</button> */}
+        {isLoggedIn &&
+          <StreamerSection>
+            {/* <button onClick={() =>  handleOpenAllStreamerTabs(streamers) }>Open all</button> */}
 
-          <>
-            <StreamInfo
-              displayName={displayName}
-              profileImageUrl={profileImageUrl}
-              userFollowsData={userFollows}
-              channels={userStreamingData}
-              isLoading={isLoading}
-            />
+            <>
+              <StreamInfo
+                displayName={displayName}
+                profileImageUrl={profileImageUrl}
+                // userFollowsData={userFollows}
+                // channels={userStreamingData}
+                // isLoading={isLoading}
+              />
 
-            <OfflineStreams offlineChannels={offlineChannels} />
-            </>
+              {/* <OfflineStreams offlineChannels={offlineChannels} /> */}
+              </>
 
 
-        </StreamerSection>
-      }
-    </Container>
+          </StreamerSection>
+        }
+      </Container>
+    </TwitchProvider>
 
   )
 }

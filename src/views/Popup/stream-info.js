@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { TWITCH_TV } from '../../consts'
 import UserHeader from '../../components/user-header'
-
+import { useTwitch } from '../hooks/useTwitchProvider'
 
 
 const StyledProfileImage = styled.img`
@@ -29,12 +29,12 @@ const StyledUserName = styled.b`
 const StreamInfo = ({
   displayName,
   profileImageUrl,
-  paginationCursor=[],
-  channels=[],
-  isLoading
 }) => {
+  const { userStreamingData, isLoading } = useTwitch()
 
-  const liveStreams = channels.filter(channel => channel?.type === 'live')
+
+  console.log('userStreamingData ' , userStreamingData)
+  const liveStreams = userStreamingData.filter(channel => channel?.type === 'live')
 
 
   const openAllLiveStreams = () => {
@@ -59,13 +59,15 @@ const StreamInfo = ({
       <UserHeader displayName={displayName} profileImageUrl={profileImageUrl} />
       <button onClick={() => openAllLiveStreams()}>Open all streams</button>
       <StyledUl>
-        {liveStreams && liveStreams.map(({user_name, title, thumbnail_url, type, user_id}) =>{
-            // box_art_url = box_art_url.replace('-{width}x{height}', '')
-            thumbnail_url = thumbnail_url.replace('-{width}x{height}', '')
+        {liveStreams && liveStreams.map(({user_name, title, thumbnail_url, type, user_id, name, box_art_url}) =>{
+            box_art_url =  box_art_url?.replace('-{width}x{height}', '')
+            thumbnail_url = thumbnail_url?.replace('-{width}x{height}', '')
             return(
               <StyledListItem onClick={() => openLiveStream({user_name})} key={user_id}>
                 <div>
-
+                  {name && box_art_url && (
+                    <StyledProfileImage src={box_art_url} alt={name} />
+                  )}
                   <StyledProfileImage src={thumbnail_url} alt={user_name} />
                   <StyledUserName>{user_name}</StyledUserName>
                 </div>
