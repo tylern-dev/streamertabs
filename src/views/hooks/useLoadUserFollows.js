@@ -3,7 +3,7 @@ import { T_TKN } from '../../consts'
 import { getApi } from '../../fetchUtil'
 import { buildFollowsUrl } from '../../utils'
 
-const useLoadUserFollows = ({userId, first=100}) => {
+const useLoadUserFollows = ({userId, first=100, isLoggedIn}) => {
   const [userFollowsData, setUserFollowsData] = useState([])
   const [isUsersLoading, setIsUsersLoading ] = useState(true)
 
@@ -38,6 +38,13 @@ const useLoadUserFollows = ({userId, first=100}) => {
       loadUserFollows({})
     }
   }, [loadUserFollows, userId])
+
+
+  useEffect(() => {
+    if(!isLoggedIn){
+      setUserFollowsData([])
+    }
+  }, [isLoggedIn])
 
   return {
     userFollowsData,

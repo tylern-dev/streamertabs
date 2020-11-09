@@ -4,7 +4,7 @@ import { T_TKN } from '../../consts'
 import { buildStreamsUrl, chunkArray } from '../../utils'
 
 
-const useStreams = ({userFollowsData, isUsersLoading}) => {
+const useStreams = ({userFollowsData, isUsersLoading, isLoggedIn}) => {
 
   const [ isStreamsLoading, setIsStreamsLoading ] = useState(true)
   const [streamsData, setStreams] = useState([])
@@ -41,6 +41,12 @@ const useStreams = ({userFollowsData, isUsersLoading}) => {
       loadUsersWithStreams()
     }
   }, [userFollowsData, isUsersLoading, loadUsersWithStreams])
+
+  useEffect(() => {
+    if(!isLoggedIn){
+      setStreams([])
+    }
+  }, [isLoggedIn])
 
   return {
     streamsData,

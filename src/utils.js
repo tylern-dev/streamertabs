@@ -1,7 +1,14 @@
-import { TWITCH_USERS_FOLLOWS, TWITCH_GET_STREAMS, TWITCH_QUERY_STREAMS, TWITCH_GAMES } from './consts'
+import { TWITCH_USERS_FOLLOWS, TWITCH_GET_STREAMS, TWITCH_QUERY_STREAMS, TWITCH_GAMES, TWITCH_USERS_URL } from './consts'
 
 export const extractStreamerIds = (usersData) => {
   return usersData.map(userData => userData.to_id)
+}
+
+export const buildTwitchUsersUrl = ({user_id}) => {
+  if(user_id instanceof Array){
+    user_id = user_id.join('&id=')
+  }
+  return `${TWITCH_USERS_URL}?${user_id ? `id=${user_id}` : ''}`
 }
 
 export const  buildFollowsUrl = ({after, from_id, first}) => {
@@ -30,14 +37,14 @@ export const buildGamesUrl = ({gameId}) => {
   return `${TWITCH_GAMES}?${gameId ? `id=${gameId}` : ''}`
 }
 
-export const reconstructUsersObj = ({userData, streamsToAdd, gamesToAdd}) => {
-  return userData.map(ud => ({
-    ...ud,
-    ...streamsToAdd.find(dta => dta.user_id === ud.to_id),
+export const reconstructUsersObj = ({userFollowsData, streamsToAdd, gamesToAdd, userData}) => {
+  return userFollowsData.map(ufd => ({
+    ...ufd,
+    ...streamsToAdd.find(dta => dta.user_id === ufd.to_id),
     ...gamesToAdd.find(gta => {
         let result
         streamsToAdd.forEach((sta) => {
-          if(sta.user_id === ud.to_id && gta.id === sta.game_id){
+          if(sta.user_id === ufd.to_id && gta.id === sta.game_id){
             result = gta
           }
         })

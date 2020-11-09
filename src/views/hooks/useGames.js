@@ -3,11 +3,10 @@ import { getApi } from '../../fetchUtil'
 import { chunkArray, buildGamesUrl } from '../../utils'
 import { T_TKN } from  '../../consts'
 
-const useGames = ({streamsData, isStreamsLoading}) =>{
+const useGames = ({streamsData, isStreamsLoading, isLoggedIn}) =>{
   const [ gameData, setGameData ] = useState([])
   const [ isGamesLoading, setIsGamesLoading ] = useState(true)
 
-  console.log('streamsData', streamsData, isStreamsLoading)
   const getGames = useCallback(() => {
     if(streamsData){
       const gameIds = streamsData?.map(game => game.game_id)
@@ -36,6 +35,12 @@ const useGames = ({streamsData, isStreamsLoading}) =>{
       getGames()
     }
   }, [streamsData, isStreamsLoading, getGames])
+
+  useEffect(() => {
+    if(!isLoggedIn){
+      setGameData([])
+    }
+  }, [isLoggedIn])
 
   return{
     gameData,

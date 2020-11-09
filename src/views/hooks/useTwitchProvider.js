@@ -4,26 +4,40 @@ import { getApi } from '../../fetchUtil'
 import useLoadUserFollows from './useLoadUserFollows'
 import useStreams from './useStreams'
 import useGames from './useGames'
+import useUserData from './useUserData'
 import { buildGamesUrl, buildFollowsUrl, buildStreamsUrl, chunkArray, reconstructUsersObj} from '../../utils'
 
 const TwitchContext = React.createContext({})
 
 const TwitchProvider = ({userId, first=100, isLoggedIn, children}) => {
-  const {isUsersLoading, userFollowsData} = useLoadUserFollows({userId})
-  const {isStreamsLoading, streamsData} = useStreams({userFollowsData, isUsersLoading})
-  const { isGamesLoading, gameData} = useGames({streamsData, isStreamsLoading})
+  const {isUsersLoading, userFollowsData} = useLoadUserFollows({userId, isLoggedIn})
+  const {isStreamsLoading, streamsData} = useStreams({userFollowsData, isUsersLoading, isLoggedIn})
+  const { isGamesLoading, gameData} = useGames({streamsData, isStreamsLoading, isLoggedIn})
+  const { isGetUserDataLoading, userData } = useUserData({userFollowsData, isUsersLoading, isLoggedIn})
 
   const [userStreamingData, setUserStreamingData] = useState([])
 
+  const canReconstructUserObj = [!isStreamsLoading, !isGamesLoading, streamsData.length > 0, gameData.length > 0, userData.length > 0, !isGetUserDataLoading].every(Boolean)
+ 
+
   useEffect(() => {
-    if(!isStreamsLoading && !isGamesLoading && streamsData.length > 0 && gameData.length > 0){
-      setUserStreamingData(reconstructUsersObj({userData: userFollowsData, streamsToAdd: streamsData, gamesToAdd:gameData}))
+    if(canReconstructUserObj){
+      setUserStreamingData(reconstructUsersObj({userFollowsData: userFollowsData, streamsToAdd: streamsData, gamesToAdd:gameData, userData: userData}))
     }
-  }, [streamsData, userFollowsData, isStreamsLoading, gameData, isGamesLoading])
+  }, [canReconstructUserObj, streamsData, userFollowsData, gameData, userData])
+
+
+  useEffect(() => {
+    if(!isLoggedIn){
+      setUserStreamingData([])
+    }
+  }, [isLoggedIn])
+
 
   const isLoading = [isGamesLoading, isStreamsLoading, isUsersLoading].every(Boolean)
 
   const values = {isLoading, userStreamingData}
+
 
   return (
     <TwitchContext.Provider value={values}>

@@ -68,7 +68,7 @@ const StreamInfo = ({
                   {name && box_art_url && (
                     <StyledProfileImage src={box_art_url} alt={name} />
                   )}
-                  <StyledProfileImage src={thumbnail_url} alt={user_name} />
+                  {/* <StyledProfileImage src={thumbnail_url} alt={user_name} /> */}
                   <StyledUserName>{user_name}</StyledUserName>
                 </div>
                   {title}
