@@ -1,3 +1,4 @@
+import { cloneElement } from 'react'
 import { TWITCH_USERS_FOLLOWS, TWITCH_GET_STREAMS, TWITCH_QUERY_STREAMS, TWITCH_GAMES, TWITCH_USERS_URL } from './consts'
 
 export const extractStreamerIds = (usersData) => {
@@ -38,6 +39,8 @@ export const buildGamesUrl = ({gameId}) => {
 }
 
 export const reconstructUsersObj = ({userFollowsData, streamsToAdd, gamesToAdd, userData}) => {
+  userData.forEach(ud=> delete ud.type)
+
   return userFollowsData.map(ufd => ({
     ...ufd,
     ...streamsToAdd.find(dta => dta.user_id === ufd.to_id),
@@ -49,7 +52,8 @@ export const reconstructUsersObj = ({userFollowsData, streamsToAdd, gamesToAdd, 
           }
         })
         return result
-    })
+    }),
+    ...userData.find(ud => ud.id === ufd.to_id)
   }))
 }
 

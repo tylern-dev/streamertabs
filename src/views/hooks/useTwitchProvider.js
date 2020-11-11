@@ -1,15 +1,13 @@
-import React, { useContext, useState, useEffect, useCallback } from 'react'
-import { T_TKN } from '../../consts'
-import { getApi } from '../../fetchUtil'
+import React, { useContext, useState, useEffect } from 'react'
 import useLoadUserFollows from './useLoadUserFollows'
 import useStreams from './useStreams'
 import useGames from './useGames'
 import useUserData from './useUserData'
-import { buildGamesUrl, buildFollowsUrl, buildStreamsUrl, chunkArray, reconstructUsersObj} from '../../utils'
+import { reconstructUsersObj} from '../../utils'
 
 const TwitchContext = React.createContext({})
 
-const TwitchProvider = ({userId, first=100, isLoggedIn, children}) => {
+const TwitchProvider = ({userId, isLoggedIn, children}) => {
   const {isUsersLoading, userFollowsData} = useLoadUserFollows({userId, isLoggedIn})
   const {isStreamsLoading, streamsData} = useStreams({userFollowsData, isUsersLoading, isLoggedIn})
   const { isGamesLoading, gameData} = useGames({streamsData, isStreamsLoading, isLoggedIn})
@@ -18,7 +16,7 @@ const TwitchProvider = ({userId, first=100, isLoggedIn, children}) => {
   const [userStreamingData, setUserStreamingData] = useState([])
 
   const canReconstructUserObj = [!isStreamsLoading, !isGamesLoading, streamsData.length > 0, gameData.length > 0, userData.length > 0, !isGetUserDataLoading].every(Boolean)
- 
+
 
   useEffect(() => {
     if(canReconstructUserObj){
@@ -34,9 +32,10 @@ const TwitchProvider = ({userId, first=100, isLoggedIn, children}) => {
   }, [isLoggedIn])
 
 
-  const isLoading = [isGamesLoading, isStreamsLoading, isUsersLoading].every(Boolean)
-
-  const values = {isLoading, userStreamingData}
+  const isLoading = [isGamesLoading, isStreamsLoading, isUsersLoading, isGetUserDataLoading].every(Boolean)
+  const liveStreams = userStreamingData.filter(channel => channel?.type === 'live')
+  const offlineStreams = userStreamingData.filter( channel => channel?.type !== 'live')
+  const values = {isLoading, userStreamingData, liveStreams, offlineStreams}
 
 
   return (
@@ -48,9 +47,9 @@ const TwitchProvider = ({userId, first=100, isLoggedIn, children}) => {
 
 
 const useTwitch = () =>{
-  const {userStreamingData, isLoading} = useContext(TwitchContext)
+  const {userStreamingData, liveStreams, offlineStreams, isLoading} = useContext(TwitchContext)
 
-  return {userStreamingData, isLoading}
+  return {userStreamingData, liveStreams, offlineStreams, isLoading}
 }
 
 export {
