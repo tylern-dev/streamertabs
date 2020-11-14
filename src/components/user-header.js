@@ -9,13 +9,13 @@ const DisplayNameContainer = styled.div`
 `
 
 const StyledProfileImage = styled.img`
-  max-width: 48px;
+  max-width: 35px;
   border-radius: 24px;
 
 `
 
 const StyledDisplayName = styled.h2`
-  font-size: 2em;
+  font-size: 1.5em;
   color: #fefefe;
 `
 
