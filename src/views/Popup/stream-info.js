@@ -69,8 +69,8 @@ const StyledListItem = styled.li`
 `
 
 
-const StreamInfo = () => {
-  const { liveStreams, isLoading } = useTwitch()
+const StreamInfo = ({streamData}) => {
+  // const { liveStreams, isLoading } = useTwitch()
   const { favoriteStreams, getFavorites, setFavorites, removeFavorite, clearAllFavorites } = useFavorites()
 
 
@@ -78,15 +78,15 @@ const StreamInfo = () => {
   // const liveStreams = userStreamingData.filter(channel => channel?.type === 'live')
 
 
-  const openAllLiveStreams = () => {
-    if(liveStreams){
-      liveStreams.forEach((stream) => {
-        chrome.tabs.create({
-          url: `${TWITCH_TV}${stream.user_name.toLowerCase()}`
-        })
-      })
-    }
-  }
+  // const openAllLiveStreams = () => {
+  //   if(liveStreams){
+  //     liveStreams.forEach((stream) => {
+  //       chrome.tabs.create({
+  //         url: `${TWITCH_TV}${stream.user_name.toLowerCase()}`
+  //       })
+  //     })
+  //   }
+  // }
 
   const openLiveStream = ({user_name}) => {
     chrome.tabs.create({
@@ -102,12 +102,11 @@ const StreamInfo = () => {
     removeFavorite(id)
   }
 
-  if(isLoading) return (<h1>Loading ...</h1>)
+  // if(isLoading) return (<h1>Loading ...</h1>)
   return(
     <>
-      <button onClick={() => clearAllFavorites()}>Clear all favorites</button>
       <StyledUl>
-        {liveStreams && liveStreams.map(({
+        {streamData && streamData.map(({
           user_name,
           viewer_count,
           title,
