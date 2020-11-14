@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { TWITCH_TV } from '../../consts'
 import UserHeader from '../../components/user-header'
 import { useTwitch } from '../hooks/useTwitchProvider'
+import { useFavorites } from '../hooks/useFavoritesProvider'
 
 
 const StyledProfileImage = styled.img``
@@ -55,10 +56,10 @@ const StyledUl = styled.ul`
 
 const StyledListItem = styled.li`
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr auto ;
   grid-gap: 8px;
-  /* background: #20213d; */
   background-color: #26284A;
+  justify-content: start;
 
   &:hover {
     cursor: pointer;
@@ -68,12 +69,9 @@ const StyledListItem = styled.li`
 `
 
 
-const StreamInfo = ({
-  displayName,
-  profileImageUrl,
-}) => {
-  const { userStreamingData, liveStreams, isLoading } = useTwitch()
-  console.log("userStreamingData", userStreamingData)
+const StreamInfo = () => {
+  const { liveStreams, isLoading } = useTwitch()
+  const { favoriteStreams, getFavorites, setFavorites, removeFavorite, clearAllFavorites } = useFavorites()
 
 
   // console.log('userStreamingData ' , userStreamingData)
@@ -96,37 +94,52 @@ const StreamInfo = ({
     })
   }
 
+  const handleFavorite = (id) =>{
+    setFavorites({id})
+    console.log(getFavorites())
+  }
+
   if(isLoading) return (<h1>Loading ...</h1>)
   return(
     <>
       {/* <UserHeader displayName={displayName} profileImageUrl={profileImageUrl} /> */}
-      {/* <button onClick={() => openAllLiveStreams()}>Open all streams</button> */}
+      <button onClick={() => clearAllFavorites()}>Clear all favorites</button>
       <StyledUl>
-        {liveStreams && liveStreams.map(({user_name,viewer_count, title, thumbnail_url, type, user_id, name, box_art_url, profile_image_url}) =>{
+        {liveStreams && liveStreams.map(({
+          user_name,
+          viewer_count,
+          title,
+          thumbnail_url,
+          type,
+          user_id,
+          name,
+          box_art_url,
+          profile_image_url
+        }) =>{
             box_art_url =  box_art_url?.replace('-{width}x{height}', '')
             thumbnail_url = thumbnail_url?.replace('-{width}x{height}', '')
+            const favorited = favoriteStreams.includes(user_id)
             return(
-              <StyledListItem onClick={() => openLiveStream({user_name})} key={user_id}>
-                <StyledProfileContainer>
+              <StyledListItem  key={user_id}>
+                <StyledProfileContainer onClick={() => openLiveStream({user_name})}>
                   <div>
                     <StyledBoxArt src={box_art_url ?? 'https://via.placeholder.com/150'} />
                     <span>{viewer_count}</span>
                   </div>
-
                   <StyledStreamerSection>
                     <StyledProfileImage src={profile_image_url}/>
                     <StyledMeta>
                       <StyledUserName>{user_name}</StyledUserName>
                       <span>{name}</span>
                       <span>{title}</span>
-
                     </StyledMeta>
                   </StyledStreamerSection>
-                  {/* <StyledStreamerHeader>
-                  </StyledStreamerHeader> */}
-
-
                 </StyledProfileContainer>
+                <button onClick={() => {
+                  favorited
+                    ? removeFavorite(user_id)
+                    : handleFavorite(user_id)
+                  }}>{favorited ? 'un-favorite' : 'favorite'}</button>
               </StyledListItem>
             )
 

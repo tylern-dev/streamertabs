@@ -1,4 +1,5 @@
 export const T_TKN = 't_tkn'
+export const FAVORITES = 'favorites'
 export const TWITCH_TV = 'https://twitch.tv/'
 export const TWITCH_USERS_URL = 'https://api.twitch.tv/helix/users'
 export const TWITCH_VALIDATE_URL = 'https://id.twitch.tv/oauth2/validate'
