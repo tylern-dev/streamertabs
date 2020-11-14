@@ -95,14 +95,16 @@ const StreamInfo = () => {
   }
 
   const handleFavorite = (id) =>{
-    setFavorites({id})
-    console.log(getFavorites())
+    setFavorites(id)
+  }
+
+  const handleRemoveFavorite = (id) => {
+    removeFavorite(id)
   }
 
   if(isLoading) return (<h1>Loading ...</h1>)
   return(
     <>
-      {/* <UserHeader displayName={displayName} profileImageUrl={profileImageUrl} /> */}
       <button onClick={() => clearAllFavorites()}>Clear all favorites</button>
       <StyledUl>
         {liveStreams && liveStreams.map(({
@@ -123,7 +125,7 @@ const StreamInfo = () => {
               <StyledListItem  key={user_id}>
                 <StyledProfileContainer onClick={() => openLiveStream({user_name})}>
                   <div>
-                    <StyledBoxArt src={box_art_url ?? 'https://via.placeholder.com/150'} />
+                    <StyledBoxArt src={box_art_url ?? thumbnail_url} />
                     <span>{viewer_count}</span>
                   </div>
                   <StyledStreamerSection>
@@ -137,17 +139,14 @@ const StreamInfo = () => {
                 </StyledProfileContainer>
                 <button onClick={() => {
                   favorited
-                    ? removeFavorite(user_id)
+                    ? handleRemoveFavorite(user_id)
                     : handleFavorite(user_id)
                   }}>{favorited ? 'un-favorite' : 'favorite'}</button>
               </StyledListItem>
             )
-
-
           }
         )}
       </StyledUl>
-      {/* <button onClick={() => loadMoreFollows()} disabled={paginationCursor.length === 0}>More...</button> */}
     </>
   )
 }

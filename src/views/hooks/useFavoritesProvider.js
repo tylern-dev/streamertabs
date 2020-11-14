@@ -1,30 +1,30 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { FAVORITES } from '../../consts'
 const FavoritesContext = React.createContext({})
 
 const FavoritesProvider = ({children}) => {
 
   const [ favoriteStreams, setFavoriteStreams] = useState([])
-  const [ isLoading, setIsLoading ] = useState()
 
   const getFavorites = () => {
-    chrome.storage.sync.get(['favorites'], (response) =>{
-      console.log(response)
-      // setFavoriteStreams(streams => [...response, ])
+    chrome.storage.sync.get(['favorites'], ({favorites}) =>{
+      if(favorites){
+        setFavoriteStreams(favorites)
+      }
     })
   }
 
-  const setFavorites = ({id}) => {
-    if(!favoriteStreams?.includes(id)){
-      setFavoriteStreams(stream => [...stream, id])
-      chrome.storage.sync.set({favorites: favoriteStreams})
+  const setFavorites = (id) => {
+    if(id){
+      setFavoriteStreams(streamIds => [...streamIds, id])
+      chrome.storage.sync.set({favorites: [...favoriteStreams, id]})
     }
-    console.log(favoriteStreams)
   }
 
-  const removeFavorite = ({id}) => {
-    if(favoriteStreams?.includes(id)){
-      setFavoriteStreams(favoriteStreams.filter(streamId => streamId !== id))
+  const removeFavorite = (id) => {
+    if(id){
+      const streamsWithRemovedId = favoriteStreams.filter(streamId => streamId !== id)
+      setFavoriteStreams(streamsWithRemovedId)
+      chrome.storage.sync.set({favorites: streamsWithRemovedId})
     }
   }
 
@@ -32,22 +32,12 @@ const FavoritesProvider = ({children}) => {
     setFavoriteStreams([])
     chrome.storage.sync.set({favorites: []})
   }
-  const data = {favoriteStreams, isLoading, setFavorites, getFavorites, removeFavorite, clearAllFavorites}
-
-  // useEffect(() => {
-  //   if(favoriteStreams){
-  //     chrome.storage.sync.set({favorites: favoriteStreams})
-  //   }
-  // }, [favoriteStreams])
 
   useEffect(() => {
-      chrome.storage.sync.get([FAVORITES], ({favorites}) => {
-        console.log('favorites', favorites)
-        if(favorites){
-          setFavoriteStreams([...favorites])
-        }
-      })
+    getFavorites()
   },[])
+
+  const data = {favoriteStreams, setFavorites, getFavorites, removeFavorite, clearAllFavorites}
 
   return (
     <FavoritesContext.Provider value={data}>
