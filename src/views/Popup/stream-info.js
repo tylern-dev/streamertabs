@@ -9,7 +9,7 @@ const StyledProfileImage = styled.img``
 const StyledBoxArt = styled.img``
 
 const StyledUserName = styled.b`
-  font-size: 1.1em;
+  font-size: 1.3em;
   color: #fefefe;
 `
 
@@ -21,14 +21,29 @@ const StyledMeta = styled.div`
 
 `
 
+const StyledSreamHeader = styled.div`
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 8px;
+  align-items: center;
+  ${StyledProfileImage} {
+    max-width: 30px;
+    border-radius: 16px;
+  }
+  button{
+    place-self: center end;
+  }
+
+`
+
 const StyledStreamerSection = styled.div`
   display: grid;
   grid-template-columns: auto 1fr;
   grid-gap: 8px;
-  & > ${StyledProfileImage} {
+  /* & > ${StyledProfileImage} {
     max-width: 30px;
     border-radius: 16px;
-  }
+  } */
 `
 
 const StyledProfileContainer = styled.div`
@@ -43,6 +58,7 @@ const StyledProfileContainer = styled.div`
     display: block;
     color: #eee;
   }
+
 `
 
 const StyledUl = styled.ul`
@@ -53,12 +69,8 @@ const StyledUl = styled.ul`
 `
 
 const StyledListItem = styled.li`
-  display: grid;
-  grid-template-columns: 1fr auto ;
-  grid-gap: 8px;
   background-color: #26284A;
-  justify-content: start;
-
+  padding: 8px 16px;
   &:hover {
     cursor: pointer;
     box-shadow: 0 1px 2px rgba(0,0,0,0.15);
@@ -103,25 +115,28 @@ const StreamInfo = ({streamData}) => {
             const favorited = favoriteStreams.includes(user_id)
             return(
               <StyledListItem  key={user_id}>
+                <StyledSreamHeader>
+                  <StyledProfileImage src={profile_image_url}/>
+                  <StyledUserName>{display_name}</StyledUserName>
+                  <button onClick={() => {
+                    favorited
+                      ? handleRemoveFavorite(user_id)
+                      : handleFavorite(user_id)
+                  }}>{favorited ? 'un-favorite' : 'favorite'}</button>
+                </StyledSreamHeader>
                 <StyledProfileContainer onClick={() => openLiveStream({display_name})}>
-                  <div>
-                    <StyledBoxArt src={box_art_url ?? thumbnail_url} />
+
+                    {/* <StyledBoxArt src={box_art_url ?? thumbnail_url} />
                     <span>{viewer_count}</span>
-                  </div>
+
                   <StyledStreamerSection>
-                    <StyledProfileImage src={profile_image_url}/>
                     <StyledMeta>
-                      <StyledUserName>{display_name}</StyledUserName>
                       <span>{name}</span>
                       <span>{title}</span>
                     </StyledMeta>
-                  </StyledStreamerSection>
+                  </StyledStreamerSection> */}
                 </StyledProfileContainer>
-                <button onClick={() => {
-                  favorited
-                    ? handleRemoveFavorite(user_id)
-                    : handleFavorite(user_id)
-                  }}>{favorited ? 'un-favorite' : 'favorite'}</button>
+
               </StyledListItem>
             )
           }
