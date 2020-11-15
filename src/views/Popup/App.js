@@ -4,7 +4,9 @@ import styled from 'styled-components'
 import SettingBtn from '../../icons/settings.svg'
 import useLogin from '../hooks/useLogin'
 import StreamInfo from './stream-info'
+import Live from './live'
 import OfflineStreams from './offline-streams'
+import Favorites from './favorites'
 import { TwitchProvider } from '../hooks/useTwitchProvider'
 import { FavoritesProvider } from '../hooks/useFavoritesProvider'
 import UserHeader from '../../components/user-header'
@@ -46,6 +48,7 @@ const App = () => {
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
   const { userId, displayName, profileImageUrl } = userData
 
+
   const handleGoToOptionsPage = () => {
     if (chrome.runtime.openOptionsPage) {
       chrome.runtime.openOptionsPage();
@@ -76,9 +79,9 @@ const App = () => {
           {isLoggedIn &&
             <StreamerSection>
               <>
-                <StreamInfo/>
-
-                {/* <OfflineStreams offlineChannels={offlineChannels} /> */}
+                <Favorites />
+                <Live />
+                <OfflineStreams />
               </>
             </StreamerSection>
           }

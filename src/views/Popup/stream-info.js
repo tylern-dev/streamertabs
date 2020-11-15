@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { TWITCH_TV } from '../../consts'
-import UserHeader from '../../components/user-header'
-import { useTwitch } from '../hooks/useTwitchProvider'
 import { useFavorites } from '../hooks/useFavoritesProvider'
 
 
@@ -69,28 +67,12 @@ const StyledListItem = styled.li`
 `
 
 
-const StreamInfo = () => {
-  const { liveStreams, isLoading } = useTwitch()
-  const { favoriteStreams, getFavorites, setFavorites, removeFavorite, clearAllFavorites } = useFavorites()
+const StreamInfo = ({streamData}) => {
+  const { favoriteStreams, setFavorites, removeFavorite, } = useFavorites()
 
-
-  // console.log('userStreamingData ' , userStreamingData)
-  // const liveStreams = userStreamingData.filter(channel => channel?.type === 'live')
-
-
-  const openAllLiveStreams = () => {
-    if(liveStreams){
-      liveStreams.forEach((stream) => {
-        chrome.tabs.create({
-          url: `${TWITCH_TV}${stream.user_name.toLowerCase()}`
-        })
-      })
-    }
-  }
-
-  const openLiveStream = ({user_name}) => {
+  const openLiveStream = ({display_name}) => {
     chrome.tabs.create({
-      url: `${TWITCH_TV}${user_name.toLowerCase()}`
+      url: `${TWITCH_TV}${display_name.toLowerCase()}`
     })
   }
 
@@ -102,13 +84,11 @@ const StreamInfo = () => {
     removeFavorite(id)
   }
 
-  if(isLoading) return (<h1>Loading ...</h1>)
   return(
     <>
-      <button onClick={() => clearAllFavorites()}>Clear all favorites</button>
       <StyledUl>
-        {liveStreams && liveStreams.map(({
-          user_name,
+        {streamData && streamData.map(({
+          display_name,
           viewer_count,
           title,
           thumbnail_url,
@@ -123,7 +103,7 @@ const StreamInfo = () => {
             const favorited = favoriteStreams.includes(user_id)
             return(
               <StyledListItem  key={user_id}>
-                <StyledProfileContainer onClick={() => openLiveStream({user_name})}>
+                <StyledProfileContainer onClick={() => openLiveStream({display_name})}>
                   <div>
                     <StyledBoxArt src={box_art_url ?? thumbnail_url} />
                     <span>{viewer_count}</span>
@@ -131,7 +111,7 @@ const StreamInfo = () => {
                   <StyledStreamerSection>
                     <StyledProfileImage src={profile_image_url}/>
                     <StyledMeta>
-                      <StyledUserName>{user_name}</StyledUserName>
+                      <StyledUserName>{display_name}</StyledUserName>
                       <span>{name}</span>
                       <span>{title}</span>
                     </StyledMeta>
