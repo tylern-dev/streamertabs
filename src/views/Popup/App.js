@@ -80,7 +80,6 @@ const App = () => {
             <StreamerSection>
               <>
                 <Favorites />
-                {/* <StreamInfo/> */}
                 <Live />
                 <OfflineStreams />
               </>

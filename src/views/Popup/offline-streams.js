@@ -1,8 +1,14 @@
 import React from 'react'
-
-const OfflineStreams = ({offlineStreams}) => {
+import StreamInfo from './stream-info'
+import {useTwitch} from '../hooks/useTwitchProvider'
+const OfflineStreams = () => {
+    const {offlineStreams} = useTwitch()
+    console.log(offlineStreams)
     return(
-        <h1>Offline</h1>
+      <>
+      <h1>Offline</h1>
+      <StreamInfo streamData={offlineStreams} />
+      </>
     )
 }
 
