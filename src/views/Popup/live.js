@@ -1,14 +1,17 @@
 import React from 'react'
+import styled from 'styled-components'
 import {useTwitch} from '../hooks/useTwitchProvider'
 import StreamInfo from './stream-info'
+import StreamSection from '../../components/stream-section'
 
 const Live = () => {
   const {liveStreams} = useTwitch()
 
   return (
     <>
-      <h1>Live</h1>
-      <StreamInfo streamData={liveStreams} />
+     <StreamSection section="Live">
+        <StreamInfo streamData={liveStreams} />
+     </StreamSection>
     </>
   )
 }

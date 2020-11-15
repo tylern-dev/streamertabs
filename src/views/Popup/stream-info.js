@@ -9,7 +9,7 @@ const StyledProfileImage = styled.img``
 const StyledBoxArt = styled.img``
 
 const StyledUserName = styled.b`
-  font-size: 1.3em;
+  font-size: 1.6em;
   color: #fefefe;
 `
 
@@ -21,7 +21,7 @@ const StyledMeta = styled.div`
 
 `
 
-const StyledSreamHeader = styled.div`
+const StyledStreamHeader = styled.div`
   display: grid;
   grid-template-columns: auto auto 1fr;
   gap: 8px;
@@ -46,13 +46,13 @@ const StyledStreamerSection = styled.div`
   } */
 `
 
-const StyledProfileContainer = styled.div`
+const StyledStreamInfo = styled.div`
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-gap: 16px;
-  padding: 8px 8px;
+  gap: 16px;
+  padding-left: 16px;
    ${StyledBoxArt} {
-    max-width: 80px
+    max-width: 48px
   }
   span {
     display: block;
@@ -69,6 +69,8 @@ const StyledUl = styled.ul`
 `
 
 const StyledListItem = styled.li`
+  display: grid;
+  gap: 16px;
   background-color: #26284A;
   padding: 8px 16px;
   &:hover {
@@ -115,27 +117,27 @@ const StreamInfo = ({streamData}) => {
             const favorited = favoriteStreams.includes(user_id)
             return(
               <StyledListItem  key={user_id}>
-                <StyledSreamHeader>
-                  <StyledProfileImage src={profile_image_url}/>
-                  <StyledUserName>{display_name}</StyledUserName>
+                <StyledStreamHeader >
+                  <StyledProfileImage src={profile_image_url} onClick={() => openLiveStream({display_name})}/>
+                  <StyledUserName onClick={() => openLiveStream({display_name})}>{display_name}</StyledUserName>
                   <button onClick={() => {
                     favorited
                       ? handleRemoveFavorite(user_id)
                       : handleFavorite(user_id)
                   }}>{favorited ? 'un-favorite' : 'favorite'}</button>
-                </StyledSreamHeader>
-                <StyledProfileContainer onClick={() => openLiveStream({display_name})}>
-
-                    {/* <StyledBoxArt src={box_art_url ?? thumbnail_url} />
-                    <span>{viewer_count}</span>
-
-                  <StyledStreamerSection>
+                </StyledStreamHeader>
+                {type && (
+                  <StyledStreamInfo >
+                    <div>
+                      <StyledBoxArt src={box_art_url ?? thumbnail_url} />
+                      <span>{viewer_count}</span>
+                    </div>
                     <StyledMeta>
                       <span>{name}</span>
                       <span>{title}</span>
                     </StyledMeta>
-                  </StyledStreamerSection> */}
-                </StyledProfileContainer>
+                  </StyledStreamInfo>
+                )}
 
               </StyledListItem>
             )

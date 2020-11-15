@@ -70,7 +70,7 @@ const App = () => {
               }
             </div>
             <ButtonGroup>
-              <Button onClick={() => handleGoToOptionsPage()}></Button>
+              {/* <Button onClick={() => handleGoToOptionsPage()}></Button> */}
               <button onClick={() => isLoggedIn ? handleLogout() : handleUserLogin()}>{isLoggedIn ? 'Logout' : 'Login to Twitch'}</button>
             </ButtonGroup>
           </Header>
@@ -78,11 +78,9 @@ const App = () => {
 
           {isLoggedIn &&
             <StreamerSection>
-              <>
-                <Favorites />
-                <Live />
-                <OfflineStreams />
-              </>
+              <Favorites />
+              <Live />
+              <OfflineStreams />
             </StreamerSection>
           }
         </Container>

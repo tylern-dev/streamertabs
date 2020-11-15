@@ -3,7 +3,7 @@ import {TWITCH_TV} from '../../consts'
 import { useFavorites } from '../hooks/useFavoritesProvider'
 import { useTwitch } from '../hooks/useTwitchProvider'
 import StreamInfo from './stream-info'
-
+import StreamSection from '../../components/stream-section'
 const Favorites = () => {
   const {liveStreams} = useTwitch()
   const { favoriteStreams, clearAllFavorites } = useFavorites()
@@ -19,8 +19,7 @@ const Favorites = () => {
   }
 
   return(
-    <>
-      <h1>Favorite section</h1>
+    <StreamSection section="Favorites">
       {liveFavorites.length > 0 &&
         <>
           <button onClick={() => handleOpenAllStreams() }>Open all favorite streams</button>
@@ -28,7 +27,7 @@ const Favorites = () => {
         </>
       }
       <StreamInfo streamData={liveFavorites} />
-    </>
+    </StreamSection>
 
   )
 }
