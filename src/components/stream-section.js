@@ -7,13 +7,13 @@ const StyledSectionHeading = styled.h1`
 const StyledStreamSection = styled.section`
   
 `
-const StreamSection = ({section, children}) => {
+const StreamSection = ({section, count, children}) => {
 
     return (
-      <>
-        <StyledSectionHeading>{section}</StyledSectionHeading>
+      <StyledStreamSection>
+        <StyledSectionHeading>{`${section} (${count})`}</StyledSectionHeading>
         {children}
-      </>
+      </StyledStreamSection>
     )
 }
 

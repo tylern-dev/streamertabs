@@ -35,10 +35,9 @@ const ButtonGroup = styled.div`
   justify-content: right;
 `
 
-const Image = styled.img``
-
 const StreamerSection = styled.section`
-
+  display: grid;
+  gap: 16px;
 `
 const Container = styled.div`
   display: grid;

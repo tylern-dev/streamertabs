@@ -6,7 +6,7 @@ import StreamSection from '../../components/stream-section'
 const OfflineStreams = () => {
     const {offlineStreams} = useTwitch()
     return(
-      <StreamSection section="Offline">
+      <StreamSection section="Offline" count={offlineStreams.length}>
         <StreamInfo streamData={offlineStreams} />
       </StreamSection>
     )

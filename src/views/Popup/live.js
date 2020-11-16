@@ -9,7 +9,7 @@ const Live = () => {
 
   return (
     <>
-     <StreamSection section="Live">
+     <StreamSection section="Live" count={liveStreams.length}>
         <StreamInfo streamData={liveStreams} />
      </StreamSection>
     </>

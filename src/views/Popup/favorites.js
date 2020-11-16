@@ -19,7 +19,7 @@ const Favorites = () => {
   }
 
   return(
-    <StreamSection section="Favorites">
+    <StreamSection section="Favorites" count={liveFavorites.length}>
       {liveFavorites.length > 0 &&
         <>
           <button onClick={() => handleOpenAllStreams() }>Open all favorite streams</button>

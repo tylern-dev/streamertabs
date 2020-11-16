@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Twitch Tabs",
   "version": "0.1",
-  "description": "Twitch tabs allows you to open all of your favorite Twitch streamers in tabs",
+  "description": "Twitch tabs allows you to open all of your favorite Twitchstreamers in tabs",
   "permissions": [
     "identity",
     "storage",
@@ -14,7 +14,9 @@
   },
   "content_scripts": [{
     "js": [ "static/js/content.js" ],
-    "matches": []
+    "matches": [
+      "https://*.twitch.tv/*"
+    ]
   }],
   "icons": {
     "192": "logo192.png"
