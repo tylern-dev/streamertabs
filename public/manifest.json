@@ -6,8 +6,7 @@
   "permissions": [
     "identity",
     "storage",
-    "https://id.twitch.tv/*",
-    "tabs"
+    "https://id.twitch.tv/*"
   ],
   "background": {
     "scripts": ["static/js/background.js"]

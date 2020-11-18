@@ -2,23 +2,36 @@ import React from 'react'
 import styled from 'styled-components'
 import { TWITCH_TV } from '../../consts'
 import { useFavorites } from '../hooks/useFavoritesProvider'
-
+import {HiStar, HiOutlineStar, HiUserGroup} from 'react-icons/hi'
 
 const StyledProfileImage = styled.img``
 
 const StyledBoxArt = styled.img``
 
-const StyledUserName = styled.b`
+const StyledUserName = styled.a`
+  text-decoration: none;
   font-size: 1.6em;
+  font-weight: 600;
   color: #fefefe;
+  &:hover{
+    color: #6D72D6;
+  }
 `
 
 const StyledMeta = styled.div`
   & > span {
     display:block;
     color: #eee;
+    & > ${HiUserGroup}{
+      color: #6D72D6;
+    }
   }
 
+`
+const StyledFavoriteBtn = styled.button`
+  background: none;
+  outline: none;
+  border: none;
 `
 
 const StyledStreamHeader = styled.div`
@@ -30,20 +43,15 @@ const StyledStreamHeader = styled.div`
     max-width: 30px;
     border-radius: 16px;
   }
+  ${StyledFavoriteBtn}{
+    place-self: center end;
+    font-size: 2em;
+    color: #6D72D6;
+  }
   button{
     place-self: center end;
   }
 
-`
-
-const StyledStreamerSection = styled.div`
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-gap: 8px;
-  /* & > ${StyledProfileImage} {
-    max-width: 30px;
-    border-radius: 16px;
-  } */
 `
 
 const StyledStreamInfo = styled.div`
@@ -73,22 +81,12 @@ const StyledListItem = styled.li`
   gap: 16px;
   background-color: #26284A;
   padding: 8px 16px;
-  &:hover {
-    cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
-  }
 
 `
 
 
 const StreamInfo = ({streamData}) => {
   const { favoriteStreams, setFavorites, removeFavorite, } = useFavorites()
-
-  const openLiveStream = ({display_name}) => {
-    chrome.tabs.create({
-      url: `${TWITCH_TV}${display_name.toLowerCase()}`
-    })
-  }
 
   const handleFavorite = (id) =>{
     setFavorites(id)
@@ -107,30 +105,32 @@ const StreamInfo = ({streamData}) => {
           title,
           thumbnail_url,
           type,
-          user_id,
+          id,
           name,
           box_art_url,
           profile_image_url
         }) =>{
             box_art_url =  box_art_url?.replace('-{width}x{height}', '')
             thumbnail_url = thumbnail_url?.replace('-{width}x{height}', '')
-            const favorited = favoriteStreams.includes(user_id)
+            const favorited = favoriteStreams.includes(id)
             return(
-              <StyledListItem  key={user_id}>
+              <StyledListItem  key={id}>
                 <StyledStreamHeader >
-                  <StyledProfileImage src={profile_image_url} onClick={() => openLiveStream({display_name})}/>
-                  <StyledUserName onClick={() => openLiveStream({display_name})}>{display_name}</StyledUserName>
-                  <button onClick={() => {
-                    favorited
-                      ? handleRemoveFavorite(user_id)
-                      : handleFavorite(user_id)
-                  }}>{favorited ? 'un-favorite' : 'favorite'}</button>
+                  <a href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">
+                    <StyledProfileImage src={profile_image_url}/>
+                  </a>
+                  <StyledUserName href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">{display_name}</StyledUserName>
+                  <StyledFavoriteBtn title={favorited ? "Unfavorite" : "Favorite"} onClick={() => favorited
+                      ? handleRemoveFavorite(id)
+                      : handleFavorite(id)}>
+                    {favorited ? <HiStar /> : <HiOutlineStar />}
+                  </StyledFavoriteBtn>
                 </StyledStreamHeader>
                 {type && (
                   <StyledStreamInfo >
                     <div>
                       <StyledBoxArt src={box_art_url ?? thumbnail_url} />
-                      <span>{viewer_count}</span>
+                      <span><HiUserGroup />{' '}{viewer_count}</span>
                     </div>
                     <StyledMeta>
                       <span>{name}</span>
@@ -138,7 +138,6 @@ const StreamInfo = ({streamData}) => {
                     </StyledMeta>
                   </StyledStreamInfo>
                 )}
-
               </StyledListItem>
             )
           }
