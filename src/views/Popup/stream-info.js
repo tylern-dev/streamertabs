@@ -18,8 +18,22 @@ const StyledUserName = styled.a`
   }
 `
 
+const StyledGameLink = styled.a`
+  text-decoration: none;
+  color: #eee;
+  &:hover{
+    color: #6D72D6;
+    text-decoration: underline;
+  }
+`
+
+const StyledStreamTitle = styled.span`
+  font-weight: 600;
+`
+
 const StyledMeta = styled.div`
-  & > span {
+  margin-top: 8px;
+  & > ${StyledStreamTitle} {
     display:block;
     color: #eee;
     & > ${HiUserGroup}{
@@ -38,13 +52,12 @@ const StyledStreamHeader = styled.div`
   display: grid;
   grid-template-columns: auto auto 1fr;
   gap: 8px;
-  align-items: center;
   ${StyledProfileImage} {
     max-width: 30px;
     border-radius: 16px;
   }
   ${StyledFavoriteBtn}{
-    place-self: center end;
+    place-self: start end;
     font-size: 2em;
     color: #6D72D6;
   }
@@ -56,12 +69,7 @@ const StyledStreamHeader = styled.div`
 
 const StyledStreamInfo = styled.div`
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 16px;
-  padding-left: 16px;
-   ${StyledBoxArt} {
-    max-width: 48px
-  }
+  grid-template-columns: auto;
   span {
     display: block;
     color: #eee;
@@ -86,6 +94,7 @@ const StyledListItem = styled.li`
 
 
 const StreamInfo = ({streamData}) => {
+  console.log('stream data' , streamData)
   const { favoriteStreams, setFavorites, removeFavorite, } = useFavorites()
 
   const handleFavorite = (id) =>{
@@ -119,25 +128,21 @@ const StreamInfo = ({streamData}) => {
                   <a href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">
                     <StyledProfileImage src={profile_image_url}/>
                   </a>
-                  <StyledUserName href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">{display_name}</StyledUserName>
+                  <div>
+                    <StyledUserName href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">{display_name}</StyledUserName>
+                    {type &&
+                      <StyledMeta>
+                        <StyledGameLink href={`${TWITCH_TV}directory/game/${name}`} target="_blank" rel="noopener noreferrer">{name}</StyledGameLink>
+                        <StyledStreamTitle>{title}</StyledStreamTitle>
+                      </StyledMeta>
+                    }
+                  </div>
                   <StyledFavoriteBtn title={favorited ? "Unfavorite" : "Favorite"} onClick={() => favorited
                       ? handleRemoveFavorite(id)
                       : handleFavorite(id)}>
                     {favorited ? <HiStar /> : <HiOutlineStar />}
                   </StyledFavoriteBtn>
                 </StyledStreamHeader>
-                {type && (
-                  <StyledStreamInfo >
-                    <div>
-                      <StyledBoxArt src={box_art_url ?? thumbnail_url} />
-                      <span><HiUserGroup />{' '}{viewer_count}</span>
-                    </div>
-                    <StyledMeta>
-                      <span>{name}</span>
-                      <span>{title}</span>
-                    </StyledMeta>
-                  </StyledStreamInfo>
-                )}
               </StyledListItem>
             )
           }
