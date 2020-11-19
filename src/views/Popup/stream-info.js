@@ -2,47 +2,71 @@ import React from 'react'
 import styled from 'styled-components'
 import { TWITCH_TV } from '../../consts'
 import { useFavorites } from '../hooks/useFavoritesProvider'
-
+import {HiStar, HiOutlineStar, HiUserGroup} from 'react-icons/hi'
 
 const StyledProfileImage = styled.img``
 
 const StyledBoxArt = styled.img``
 
-const StyledUserName = styled.b`
-  font-size: 1.1em;
+const StyledUserName = styled.a`
+  text-decoration: none;
+  font-size: 1.6em;
+  font-weight: 600;
   color: #fefefe;
+  &:hover{
+    color: #6D72D6;
+  }
 `
 
 const StyledMeta = styled.div`
   & > span {
     display:block;
     color: #eee;
+    & > ${HiUserGroup}{
+      color: #6D72D6;
+    }
   }
 
 `
+const StyledFavoriteBtn = styled.button`
+  background: none;
+  outline: none;
+  border: none;
+`
 
-const StyledStreamerSection = styled.div`
+const StyledStreamHeader = styled.div`
   display: grid;
-  grid-template-columns: auto 1fr;
-  grid-gap: 8px;
-  & > ${StyledProfileImage} {
+  grid-template-columns: auto auto 1fr;
+  gap: 8px;
+  align-items: center;
+  ${StyledProfileImage} {
     max-width: 30px;
     border-radius: 16px;
   }
+  ${StyledFavoriteBtn}{
+    place-self: center end;
+    font-size: 2em;
+    color: #6D72D6;
+  }
+  button{
+    place-self: center end;
+  }
+
 `
 
-const StyledProfileContainer = styled.div`
+const StyledStreamInfo = styled.div`
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-gap: 16px;
-  padding: 8px 8px;
+  gap: 16px;
+  padding-left: 16px;
    ${StyledBoxArt} {
-    max-width: 80px
+    max-width: 48px
   }
   span {
     display: block;
     color: #eee;
   }
+
 `
 
 const StyledUl = styled.ul`
@@ -54,27 +78,15 @@ const StyledUl = styled.ul`
 
 const StyledListItem = styled.li`
   display: grid;
-  grid-template-columns: 1fr auto ;
-  grid-gap: 8px;
+  gap: 16px;
   background-color: #26284A;
-  justify-content: start;
-
-  &:hover {
-    cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
-  }
+  padding: 8px 16px;
 
 `
 
 
 const StreamInfo = ({streamData}) => {
   const { favoriteStreams, setFavorites, removeFavorite, } = useFavorites()
-
-  const openLiveStream = ({display_name}) => {
-    chrome.tabs.create({
-      url: `${TWITCH_TV}${display_name.toLowerCase()}`
-    })
-  }
 
   const handleFavorite = (id) =>{
     setFavorites(id)
@@ -93,35 +105,39 @@ const StreamInfo = ({streamData}) => {
           title,
           thumbnail_url,
           type,
-          user_id,
+          id,
           name,
           box_art_url,
           profile_image_url
         }) =>{
             box_art_url =  box_art_url?.replace('-{width}x{height}', '')
             thumbnail_url = thumbnail_url?.replace('-{width}x{height}', '')
-            const favorited = favoriteStreams.includes(user_id)
+            const favorited = favoriteStreams.includes(id)
             return(
-              <StyledListItem  key={user_id}>
-                <StyledProfileContainer onClick={() => openLiveStream({display_name})}>
-                  <div>
-                    <StyledBoxArt src={box_art_url ?? thumbnail_url} />
-                    <span>{viewer_count}</span>
-                  </div>
-                  <StyledStreamerSection>
+              <StyledListItem  key={id}>
+                <StyledStreamHeader >
+                  <a href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">
                     <StyledProfileImage src={profile_image_url}/>
+                  </a>
+                  <StyledUserName href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">{display_name}</StyledUserName>
+                  <StyledFavoriteBtn title={favorited ? "Unfavorite" : "Favorite"} onClick={() => favorited
+                      ? handleRemoveFavorite(id)
+                      : handleFavorite(id)}>
+                    {favorited ? <HiStar /> : <HiOutlineStar />}
+                  </StyledFavoriteBtn>
+                </StyledStreamHeader>
+                {type && (
+                  <StyledStreamInfo >
+                    <div>
+                      <StyledBoxArt src={box_art_url ?? thumbnail_url} />
+                      <span><HiUserGroup />{' '}{viewer_count}</span>
+                    </div>
                     <StyledMeta>
-                      <StyledUserName>{display_name}</StyledUserName>
                       <span>{name}</span>
                       <span>{title}</span>
                     </StyledMeta>
-                  </StyledStreamerSection>
-                </StyledProfileContainer>
-                <button onClick={() => {
-                  favorited
-                    ? handleRemoveFavorite(user_id)
-                    : handleFavorite(user_id)
-                  }}>{favorited ? 'un-favorite' : 'favorite'}</button>
+                  </StyledStreamInfo>
+                )}
               </StyledListItem>
             )
           }

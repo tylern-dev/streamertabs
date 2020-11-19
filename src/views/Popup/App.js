@@ -1,24 +1,18 @@
 
-import React from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components'
 import SettingBtn from '../../icons/settings.svg'
 import useLogin from '../hooks/useLogin'
-import StreamInfo from './stream-info'
 import Live from './live'
 import OfflineStreams from './offline-streams'
 import Favorites from './favorites'
 import { TwitchProvider } from '../hooks/useTwitchProvider'
 import { FavoritesProvider } from '../hooks/useFavoritesProvider'
 import UserHeader from '../../components/user-header'
+
 const Header = styled.header`
   display: grid;
   grid-template-columns: 1fr 1fr;
-
-`
-const Title = styled.h1`
-  margin: 0;
-  color: #fff;
-  padding: 8px 0 0 8px;
 `
 
 const Button = styled.button`
@@ -35,16 +29,34 @@ const ButtonGroup = styled.div`
   justify-content: right;
 `
 
-const Image = styled.img``
-
 const StreamerSection = styled.section`
-
+  display: grid;
+  gap: 16px;
 `
 const Container = styled.div`
   display: grid;
 `
 
+const routes = [
+  {
+    route: '/favorites',
+    Component: Favorites,
+    key: 'favorites'
+  },
+  {
+    route: '/live',
+    Component: Live,
+    key: 'live'
+  },
+  {
+    route: '/offline',
+    Component: OfflineStreams,
+    key: 'offline'
+  }
+]
+
 const App = () => {
+  const [appRoute, setAppRoute] = useState('/all')
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
   const { userId, displayName, profileImageUrl } = userData
 
@@ -57,20 +69,26 @@ const App = () => {
     }
   }
 
+  const ShowAllSections = () =>
+    <>
+      <Favorites />
+      <Live />
+      <OfflineStreams />
+    </>
+
+
   return (
     <TwitchProvider userId={userId} isLoggedIn={isLoggedIn}>
       <FavoritesProvider>
-
         <Container>
           <Header>
             <div>
-              <Title>Twitch Tabs</Title>
               {isLoggedIn &&
                 <UserHeader displayName={displayName} profileImageUrl={profileImageUrl}/>
               }
             </div>
             <ButtonGroup>
-              <Button onClick={() => handleGoToOptionsPage()}></Button>
+              {/* <Button onClick={() => handleGoToOptionsPage()}></Button> */}
               <button onClick={() => isLoggedIn ? handleLogout() : handleUserLogin()}>{isLoggedIn ? 'Logout' : 'Login to Twitch'}</button>
             </ButtonGroup>
           </Header>
@@ -78,11 +96,8 @@ const App = () => {
 
           {isLoggedIn &&
             <StreamerSection>
-              <>
-                <Favorites />
-                <Live />
-                <OfflineStreams />
-              </>
+              {appRoute === '/all' && <ShowAllSections />}
+              {routes.map(({Component, route, key})=> route === appRoute && <Component key={key} /> )}
             </StreamerSection>
           }
         </Container>
