@@ -4,7 +4,17 @@ import App from './views/Popup/App'
 import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
+  html{
+    overflow: scroll;
+  }
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
   body {
+    /* position: relative; */
+    /* height: 100%; */
+    /* min-height:600px; */
     width: 600px;
     margin: 0px;
     box-sizing: border-box;
@@ -17,9 +27,7 @@ const GlobalStyle = createGlobalStyle`
 ReactDOM.render(
   <React.StrictMode>
     <GlobalStyle />
-
-      <App />
-
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

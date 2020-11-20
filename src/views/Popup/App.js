@@ -1,5 +1,5 @@
 
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import SettingBtn from '../../icons/settings.svg'
 import useLogin from '../hooks/useLogin'
@@ -14,6 +14,9 @@ import Menu from './menu'
 const Header = styled.header`
   display: grid;
   grid-template-columns: 1fr 1fr;
+  background-color: #1B1B33;
+  position: sticky;
+  top:0;
 `
 
 const Button = styled.button`
@@ -59,7 +62,7 @@ const routes = [
 const MainContainer = styled.div`
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 4px;
+  gap: 8px;
 `
 
 const App = () => {
@@ -85,7 +88,18 @@ const App = () => {
 
   const handleChangeRoute = (route) => {
     setAppRoute(route)
+    chrome.storage.local.set({lastTab: route})
   }
+
+  useEffect(() => {
+    chrome.storage.local.get(['lastTab'], ({lastTab}) => {
+      if(!lastTab){
+        setAppRoute('/all')
+      } else {
+        setAppRoute(lastTab)
+      }
+    })
+  }, [])
   return (
     <TwitchProvider userId={userId} isLoggedIn={isLoggedIn}>
       <FavoritesProvider>
@@ -104,7 +118,7 @@ const App = () => {
 
             {isLoggedIn &&
               <MainContainer>
-                <Menu appRoute={appRoute} handleChangeRoute={handleChangeRoute} />
+                <Menu activeRoute={appRoute} handleChangeRoute={handleChangeRoute} />
 
                 <StreamerSection>
                   {appRoute === '/all' && <ShowAllSections />}

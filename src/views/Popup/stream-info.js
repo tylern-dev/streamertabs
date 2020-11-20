@@ -94,7 +94,6 @@ const StyledListItem = styled.li`
 
 
 const StreamInfo = ({streamData}) => {
-  console.log('stream data' , streamData)
   const { favoriteStreams, setFavorites, removeFavorite, } = useFavorites()
 
   const handleFavorite = (id) =>{

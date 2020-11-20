@@ -5,7 +5,7 @@ const DisplayNameContainer = styled.div`
   grid-template-columns:auto 1fr;
   grid-gap: 16px;
   align-items: center;
-  padding: 8px 8px;
+  padding: 0 8px;
 `
 
 const StyledProfileImage = styled.img`
