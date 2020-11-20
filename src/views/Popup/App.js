@@ -9,6 +9,7 @@ import Favorites from './favorites'
 import { TwitchProvider } from '../hooks/useTwitchProvider'
 import { FavoritesProvider } from '../hooks/useFavoritesProvider'
 import UserHeader from '../../components/user-header'
+import Menu from './menu'
 
 const Header = styled.header`
   display: grid;
@@ -55,6 +56,12 @@ const routes = [
   }
 ]
 
+const MainContainer = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px;
+`
+
 const App = () => {
   const [appRoute, setAppRoute] = useState('/all')
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
@@ -76,7 +83,9 @@ const App = () => {
       <OfflineStreams />
     </>
 
-
+  const handleChangeRoute = (route) => {
+    setAppRoute(route)
+  }
   return (
     <TwitchProvider userId={userId} isLoggedIn={isLoggedIn}>
       <FavoritesProvider>
@@ -93,13 +102,17 @@ const App = () => {
             </ButtonGroup>
           </Header>
 
+            {isLoggedIn &&
+              <MainContainer>
+                <Menu appRoute={appRoute} handleChangeRoute={handleChangeRoute} />
 
-          {isLoggedIn &&
-            <StreamerSection>
-              {appRoute === '/all' && <ShowAllSections />}
-              {routes.map(({Component, route, key})=> route === appRoute && <Component key={key} /> )}
-            </StreamerSection>
-          }
+                <StreamerSection>
+                  {appRoute === '/all' && <ShowAllSections />}
+                  {routes.map(({Component, route, key})=> route === appRoute && <Component key={key} /> )}
+                </StreamerSection>
+
+              </MainContainer>
+            }
         </Container>
       </FavoritesProvider>
     </TwitchProvider>
