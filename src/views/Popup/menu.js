@@ -20,13 +20,16 @@ const StyledMenuButton = styled.button`
   display: flex;
   margin: 0;
   padding: 4px;
-  background: #26284A;
+  background-color: #26284A;
   color: #6D72D6;
-  border: none; 
+  border: none;
   outline: none;
+
+  transition: background-color 0.5s ease;
 
   :hover {
     cursor: pointer;
+    background-color:#1B1B33;
   }
 
   :active {
@@ -58,7 +61,7 @@ const Menu = ({activeRoute, handleChangeRoute, handleLogout}) => {
           {activeRoute === '/favorites' ? <HiStar /> : <HiOutlineStar />}
         </StyledMenuButton>
         <StyledMenuButton title="Live" onClick={() => handleChangeRoute('/live')}>
-          {activeRoute === '/live' ? <RiCameraFill /> : <RiCameraLine />} 
+          {activeRoute === '/live' ? <RiCameraFill /> : <RiCameraLine />}
         </StyledMenuButton>
         <StyledMenuButton title="Offline" onClick={() => handleChangeRoute('/offline')}>
           {activeRoute === '/offline' ? <RiCameraOffFill /> : <RiCameraOffLine />}

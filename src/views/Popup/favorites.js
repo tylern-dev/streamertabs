@@ -13,7 +13,10 @@ const StyledOpenAllFavorites = styled.button`
   color: #6D72D6;
   border-radius: 5px;
 
+  transition: color,border 0.5s ease;
+
   :hover{
+    cursor: pointer;
     color: #6D95ED;
     border: 1px solid #6D95ED;
     border-radius: 5px;

@@ -60,6 +60,10 @@ const StyledStreamHeader = styled.div`
     place-self: start end;
     font-size: 2em;
     color: #6D72D6;
+
+    :hover{
+      cursor: pointer;
+    }
   }
   button{
     place-self: center end;
