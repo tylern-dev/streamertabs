@@ -67,4 +67,7 @@ export const chunkArray = (array, size)=>{
   return result
 }
 
+export const handleSortStreamsByType = (sortBy, streams) => {
+
+}
 
