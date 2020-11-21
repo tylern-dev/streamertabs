@@ -6,6 +6,7 @@ import useLogin from '../hooks/useLogin'
 import Live from './live'
 import OfflineStreams from './offline-streams'
 import Favorites from './favorites'
+import LoggedOut from './logged-out'
 import { TwitchProvider } from '../hooks/useTwitchProvider'
 import { FavoritesProvider } from '../hooks/useFavoritesProvider'
 import UserHeader from '../../components/user-header'
@@ -13,10 +14,11 @@ import Menu from './menu'
 
 const Header = styled.header`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto 1fr;
   background-color: #1B1B33;
   position: sticky;
   top:0;
+  padding: 9px 0;
 `
 
 const Button = styled.button`
@@ -100,6 +102,9 @@ const App = () => {
       }
     })
   }, [])
+
+  if(!isLoggedIn) return <LoggedOut handleLogin={handleUserLogin}/>
+
   return (
     <TwitchProvider userId={userId} isLoggedIn={isLoggedIn}>
       <FavoritesProvider>
@@ -112,13 +117,13 @@ const App = () => {
             </div>
             <ButtonGroup>
               {/* <Button onClick={() => handleGoToOptionsPage()}></Button> */}
-              <button onClick={() => isLoggedIn ? handleLogout() : handleUserLogin()}>{isLoggedIn ? 'Logout' : 'Login to Twitch'}</button>
+              {/* <button onClick={() => isLoggedIn ? handleLogout() : handleUserLogin()}>{isLoggedIn ? 'Logout' : 'Login to Twitch'}</button> */}
             </ButtonGroup>
           </Header>
 
             {isLoggedIn &&
               <MainContainer>
-                <Menu activeRoute={appRoute} handleChangeRoute={handleChangeRoute} />
+                <Menu activeRoute={appRoute} handleChangeRoute={handleChangeRoute} handleLogout={handleLogout}/>
 
                 <StreamerSection>
                   {appRoute === '/all' && <ShowAllSections />}

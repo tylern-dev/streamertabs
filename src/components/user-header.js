@@ -1,9 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
+import { TWITCH_TV } from '../consts'
+
 const DisplayNameContainer = styled.div`
   display: grid;
   grid-template-columns:auto 1fr;
-  grid-gap: 16px;
+  grid-gap: 8px;
   align-items: center;
   padding: 0 8px;
 `
@@ -14,9 +16,14 @@ const StyledProfileImage = styled.img`
 
 `
 
-const StyledDisplayName = styled.h2`
+const StyledDisplayName = styled.a`
+  text-decoration: none;
   font-size: 1.5em;
+  font-weight: 600;
   color: #fefefe;
+  &:hover{
+    color: #6D72D6;
+  }
 `
 
 
@@ -25,7 +32,7 @@ const UserHeader = ({profileImageUrl, displayName}) => {
     return(
       <DisplayNameContainer >
         <StyledProfileImage src={profileImageUrl} alt="profile" />
-        <StyledDisplayName onClick>{displayName}</StyledDisplayName>
+        <StyledDisplayName href={`${TWITCH_TV}`}>{displayName}</StyledDisplayName>
       </DisplayNameContainer>
     )
 }
