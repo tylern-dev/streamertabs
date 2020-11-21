@@ -1,18 +1,24 @@
 
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import SettingBtn from '../../icons/settings.svg'
 import useLogin from '../hooks/useLogin'
 import Live from './live'
 import OfflineStreams from './offline-streams'
 import Favorites from './favorites'
+import LoggedOut from './logged-out'
 import { TwitchProvider } from '../hooks/useTwitchProvider'
 import { FavoritesProvider } from '../hooks/useFavoritesProvider'
 import UserHeader from '../../components/user-header'
+import Menu from './menu'
 
 const Header = styled.header`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto 1fr;
+  background-color: #1B1B33;
+  position: sticky;
+  top:0;
+  padding: 9px 0;
 `
 
 const Button = styled.button`
@@ -55,6 +61,12 @@ const routes = [
   }
 ]
 
+const MainContainer = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+`
+
 const App = () => {
   const [appRoute, setAppRoute] = useState('/all')
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
@@ -76,6 +88,22 @@ const App = () => {
       <OfflineStreams />
     </>
 
+  const handleChangeRoute = (route) => {
+    setAppRoute(route)
+    chrome.storage.local.set({lastTab: route})
+  }
+
+  useEffect(() => {
+    chrome.storage.local.get(['lastTab'], ({lastTab}) => {
+      if(!lastTab){
+        setAppRoute('/all')
+      } else {
+        setAppRoute(lastTab)
+      }
+    })
+  }, [])
+
+  if(!isLoggedIn) return <LoggedOut handleLogin={handleUserLogin}/>
 
   return (
     <TwitchProvider userId={userId} isLoggedIn={isLoggedIn}>
@@ -89,17 +117,21 @@ const App = () => {
             </div>
             <ButtonGroup>
               {/* <Button onClick={() => handleGoToOptionsPage()}></Button> */}
-              <button onClick={() => isLoggedIn ? handleLogout() : handleUserLogin()}>{isLoggedIn ? 'Logout' : 'Login to Twitch'}</button>
+              {/* <button onClick={() => isLoggedIn ? handleLogout() : handleUserLogin()}>{isLoggedIn ? 'Logout' : 'Login to Twitch'}</button> */}
             </ButtonGroup>
           </Header>
 
+            {isLoggedIn &&
+              <MainContainer>
+                <Menu activeRoute={appRoute} handleChangeRoute={handleChangeRoute} handleLogout={handleLogout}/>
 
-          {isLoggedIn &&
-            <StreamerSection>
-              {appRoute === '/all' && <ShowAllSections />}
-              {routes.map(({Component, route, key})=> route === appRoute && <Component key={key} /> )}
-            </StreamerSection>
-          }
+                <StreamerSection>
+                  {appRoute === '/all' && <ShowAllSections />}
+                  {routes.map(({Component, route, key})=> route === appRoute && <Component key={key} /> )}
+                </StreamerSection>
+
+              </MainContainer>
+            }
         </Container>
       </FavoritesProvider>
     </TwitchProvider>
