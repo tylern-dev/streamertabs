@@ -96,6 +96,10 @@ const StyledListItem = styled.li`
 
 `
 
+const StyledImgLink = styled.a`
+  height: calc(100% - 30px);
+`
+
 
 const StreamInfo = ({streamData}) => {
   const { favoriteStreams, setFavorites, removeFavorite, } = useFavorites()
@@ -128,9 +132,9 @@ const StreamInfo = ({streamData}) => {
             return(
               <StyledListItem  key={id}>
                 <StyledStreamHeader >
-                  <a href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">
+                  <StyledImgLink href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">
                     <StyledProfileImage src={profile_image_url}/>
-                  </a>
+                  </StyledImgLink>
                   <div>
                     <StyledUserName href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">{display_name}</StyledUserName>
                     {type &&

@@ -5,6 +5,7 @@ import { useFavorites } from '../hooks/useFavoritesProvider'
 import { useTwitch } from '../hooks/useTwitchProvider'
 import StreamInfo from './stream-info'
 import StreamSection from '../../components/stream-section'
+import Empty from './empty'
 
 const StyledOpenAllFavorites = styled.button`
   border: 0;
@@ -38,12 +39,13 @@ const Favorites = () => {
   }
 
   return(
-    <StreamSection section="Favorites" count={liveFavorites.length}>
-      {liveFavorites.length > 0 &&
+    <StreamSection section="Favorites" count={liveFavorites.length} >
+      {liveFavorites.length > 0 ?
         <>
           <StyledOpenAllFavorites onClick={() => handleOpenAllStreams() }>Open favorites</StyledOpenAllFavorites>
           {/* <button onClick={() => clearAllFavorites()}>Clear all favorites</button> */}
         </>
+        : <Empty />
       }
       <StreamInfo streamData={liveFavorites} />
     </StreamSection>

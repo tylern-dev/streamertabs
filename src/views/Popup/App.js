@@ -10,6 +10,7 @@ import LoggedOut from './logged-out'
 import { TwitchProvider } from '../hooks/useTwitchProvider'
 import { FavoritesProvider } from '../hooks/useFavoritesProvider'
 import UserHeader from '../../components/user-header'
+import BmcButton from '../../components/bmc-button'
 import Menu from './menu'
 
 const Header = styled.header`
@@ -67,6 +68,7 @@ const MainContainer = styled.div`
   gap: 8px;
 `
 
+
 const App = () => {
   const [appRoute, setAppRoute] = useState('/all')
   const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
@@ -117,7 +119,8 @@ const App = () => {
             </div>
             <ButtonGroup>
               {/* <Button onClick={() => handleGoToOptionsPage()}></Button> */}
-              {/* <button onClick={() => isLoggedIn ? handleLogout() : handleUserLogin()}>{isLoggedIn ? 'Logout' : 'Login to Twitch'}</button> */}
+              <BmcButton />
+
             </ButtonGroup>
           </Header>
 
