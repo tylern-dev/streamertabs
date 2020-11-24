@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { TWITCH_TV } from '../../consts'
 import { useFavorites } from '../hooks/useFavoritesProvider'
 import {HiStar, HiOutlineStar, HiUserGroup} from 'react-icons/hi'
-
+import LazyLoad from 'react-lazyload'
 const StyledProfileImage = styled.img``
 
 const StyledBoxArt = styled.img``
@@ -130,27 +130,29 @@ const StreamInfo = ({streamData}) => {
             thumbnail_url = thumbnail_url?.replace('-{width}x{height}', '')
             const favorited = favoriteStreams.includes(id)
             return(
-              <StyledListItem  key={id}>
-                <StyledStreamHeader >
-                  <StyledImgLink href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">
-                    <StyledProfileImage src={profile_image_url}/>
-                  </StyledImgLink>
-                  <div>
-                    <StyledUserName href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">{display_name}</StyledUserName>
-                    {type &&
-                      <StyledMeta>
-                        <StyledGameLink href={`${TWITCH_TV}directory/game/${name}`} target="_blank" rel="noopener noreferrer">{name}</StyledGameLink>
-                        <StyledStreamTitle>{title}</StyledStreamTitle>
-                      </StyledMeta>
-                    }
-                  </div>
-                  <StyledFavoriteBtn title={favorited ? "Unfavorite" : "Favorite"} onClick={() => favorited
-                      ? handleRemoveFavorite(id)
-                      : handleFavorite(id)}>
-                    {favorited ? <HiStar /> : <HiOutlineStar />}
-                  </StyledFavoriteBtn>
-                </StyledStreamHeader>
-              </StyledListItem>
+              <LazyLoad height={30} once>
+                <StyledListItem  key={id}>
+                  <StyledStreamHeader >
+                    <StyledImgLink href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">
+                        <StyledProfileImage src={profile_image_url}/>
+                    </StyledImgLink>
+                    <div>
+                      <StyledUserName href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">{display_name}</StyledUserName>
+                      {type &&
+                        <StyledMeta>
+                          <StyledGameLink href={`${TWITCH_TV}directory/game/${name}`} target="_blank" rel="noopener noreferrer">{name}</StyledGameLink>
+                          <StyledStreamTitle>{title}</StyledStreamTitle>
+                        </StyledMeta>
+                      }
+                    </div>
+                    <StyledFavoriteBtn title={favorited ? "Unfavorite" : "Favorite"} onClick={() => favorited
+                        ? handleRemoveFavorite(id)
+                        : handleFavorite(id)}>
+                      {favorited ? <HiStar /> : <HiOutlineStar />}
+                    </StyledFavoriteBtn>
+                  </StyledStreamHeader>
+                </StyledListItem>
+              </LazyLoad>
             )
           }
         )}
