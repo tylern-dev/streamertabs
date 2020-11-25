@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { HiOutlineHome, HiHome, HiOutlineStar, HiStar,  } from 'react-icons/hi'
-import {BiVideoOff, BiVideo } from 'react-icons/bi'
 import { RiCameraLine, RiCameraOffLine, RiCameraOffFill, RiCameraFill, RiLogoutCircleRLine } from 'react-icons/ri'
 
 const StyledNav = styled.nav`
@@ -10,8 +9,8 @@ const StyledNav = styled.nav`
   /* grid-template-columns: 1fr; */
   /* align-content: start; */
   /* gap: 4px; */
-  height: 539px;
-  top: 60px;
+  height: 530px;
+  top: 69px;
 
 `
 

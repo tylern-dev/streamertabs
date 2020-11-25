@@ -32,7 +32,7 @@ const UserHeader = ({profileImageUrl, displayName}) => {
     return(
       <DisplayNameContainer >
         <StyledProfileImage src={profileImageUrl} alt="profile" />
-        <StyledDisplayName href={`${TWITCH_TV}`}>{displayName}</StyledDisplayName>
+        <StyledDisplayName href={`${TWITCH_TV}` } target="_blank">{displayName}</StyledDisplayName>
       </DisplayNameContainer>
     )
 }

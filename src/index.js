@@ -7,9 +7,18 @@ const GlobalStyle = createGlobalStyle`
   html{
     overflow: scroll;
   }
-  ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
+  
+  body::-webkit-scrollbar {
+    width: .8em;
+  }
+  
+  body::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  body::-webkit-scrollbar-thumb {
+    background-color: #1B1B33;
+    border: 2px solid #26284A;
   }
   body {
     /* position: relative; */
@@ -20,7 +29,7 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     /* background-image: linear-gradient(-20deg, #2b5876 0%, #4e4376 100%); */
     background-color: #1B1B33;
-
+    
   }
 `
 

@@ -71,16 +71,6 @@ const StyledStreamHeader = styled.div`
 
 `
 
-const StyledStreamInfo = styled.div`
-  display: grid;
-  grid-template-columns: auto;
-  span {
-    display: block;
-    color: #eee;
-  }
-
-`
-
 const StyledUl = styled.ul`
   list-style-type: none;
   display: grid;
@@ -132,11 +122,11 @@ const StreamInfo = ({streamData}) => {
             return(
               <StyledListItem  key={id}>
                 <StyledStreamHeader >
-                  <StyledImgLink href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">
+                  <StyledImgLink href={`${TWITCH_TV}${display_name?.toLowerCase()}`} target="_blank" rel="noopener noreferrer">
                     <StyledProfileImage src={profile_image_url}/>
                   </StyledImgLink>
                   <div>
-                    <StyledUserName href={`${TWITCH_TV}${display_name.toLowerCase()}`} target="_blank" rel="noopener noreferrer">{display_name}</StyledUserName>
+                    <StyledUserName href={`${TWITCH_TV}${display_name?.toLowerCase()}`} target="_blank" rel="noopener noreferrer">{display_name}</StyledUserName>
                     {type &&
                       <StyledMeta>
                         <StyledGameLink href={`${TWITCH_TV}directory/game/${name}`} target="_blank" rel="noopener noreferrer">{name}</StyledGameLink>
