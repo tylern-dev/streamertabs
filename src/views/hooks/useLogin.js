@@ -5,6 +5,7 @@ import { postApi } from '../../fetchUtil'
 const useLogin = () => {
 
   const [ isLoggedIn, setIsLoggedIn ] = useState()
+  const [ isLoading, setIsLoading ] = useState(false)
   const [userData, setUserData] = useState({})
 
   const getUserObj = () => {
@@ -54,6 +55,7 @@ const useLogin = () => {
   }
 
   const handleUserLogin = () => {
+    setIsLoading(true)
     chrome.identity.launchWebAuthFlow({
       'url': `https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TWITCH_CLIENT_ID}&redirect_uri=https://${chrome.runtime.id}.chromiumapp.org/provider_cb&scope=viewing_activity_read&force_verify=true`, 'interactive': true
     }, (redirect_url) => {
@@ -61,6 +63,10 @@ const useLogin = () => {
         .then(() =>{
           getUserObj()
           setIsLoggedIn(true)
+          setIsLoading(false)
+        }).catch(() => {
+          setIsLoading(false)
+          setIsLoggedIn(false)
         })
      });
   }
@@ -83,6 +89,7 @@ const useLogin = () => {
 
   return {
     isLoggedIn,
+    isLoading,
     userData,
     handleUserLogin,
     handleLogout

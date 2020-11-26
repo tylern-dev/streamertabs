@@ -1,4 +1,5 @@
 import React from 'react'
+import Loading from '../../components/loading'
 import styled from 'styled-components'
 import { TWITCH_TV } from '../../consts'
 
@@ -43,13 +44,23 @@ const Link = styled.a`
   color: #6D95ED;
 `
 
-const LoggedOut = ({handleLogin}) => {
+const StyledButtonContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+const LoggedOut = ({handleLogin, isLoading}) => {
 
   return (
     <LoggedOutContainer>
       <div>
         <StyledTitle>Twitch Tabs</StyledTitle>
-        <StyledLoginButton onClick={() => handleLogin()}>Log in with Twitch</StyledLoginButton>
+        <StyledLoginButton onClick={() => handleLogin()} disabled={isLoading}>
+          <StyledButtonContent>
+            <span>Log in with Twitch</span>{isLoading && <Loading  height={20} width={20}/> }
+          </StyledButtonContent>
+        </StyledLoginButton>
         <Copy>Don't have an account? Sign up at <Link href="https://twitch.tv" target="_blank">Twitch</Link></Copy>
       </div>
     </LoggedOutContainer>

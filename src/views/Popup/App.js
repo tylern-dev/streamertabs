@@ -36,6 +36,7 @@ const StreamerSection = styled.section`
 `
 const Container = styled.div`
   display: grid;
+  min-height: 600px;
 `
 
 const routes = [
@@ -67,7 +68,7 @@ const MainContainer = styled.div`
 
 const App = () => {
   const [appRoute, setAppRoute] = useState('/all')
-  const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
+  const {isLoggedIn, isLoading: isLoginLoading, userData, handleLogout, handleUserLogin} = useLogin()
   const { userId, displayName, profileImageUrl } = userData
 
 
@@ -101,7 +102,7 @@ const App = () => {
     })
   }, [])
 
-  if(!isLoggedIn) return <LoggedOut handleLogin={handleUserLogin}/>
+  if(!isLoggedIn) return <LoggedOut handleLogin={handleUserLogin} isLoading={isLoginLoading}/>
 
   return (
     <TwitchProvider userId={userId} isLoggedIn={isLoggedIn}>

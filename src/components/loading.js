@@ -7,16 +7,15 @@ const StyledLoadContainer = styled.div`
   justify-content: center;
   align-content: center;
 `
-const Loading = () => {
+const Loading = ({height=100, width=100}) => {
 
   return (
     <StyledLoadContainer>
       <Loader
         type="TailSpin"
         color="#6D72D6"
-        height={100}
-        width={100}
-        timeout={3000}
+        height={height}
+        width={width}
       />
     </StyledLoadContainer>
   )
