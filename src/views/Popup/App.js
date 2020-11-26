@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import SettingBtn from '../../icons/settings.svg'
 import useLogin from '../hooks/useLogin'
 import Live from './live'
+import Loading from '../../components/loading'
 import OfflineStreams from './offline-streams'
 import Favorites from './favorites'
 import LoggedOut from './logged-out'
@@ -22,13 +23,6 @@ const Header = styled.header`
   padding: 9px 0;
 `
 
-const Button = styled.button`
-  margin: 16px;
-  border: none;
-  background-color: #fff;
-  width: 48px;
-
-`
 const ButtonGroup = styled.div`
   display: grid;
   grid-template-columns: auto auto;
@@ -42,6 +36,7 @@ const StreamerSection = styled.section`
 `
 const Container = styled.div`
   display: grid;
+  min-height: 600px;
 `
 
 const routes = [
@@ -69,9 +64,11 @@ const MainContainer = styled.div`
 `
 
 
+
+
 const App = () => {
   const [appRoute, setAppRoute] = useState('/all')
-  const {isLoggedIn, userData, handleLogout, handleUserLogin} = useLogin()
+  const {isLoggedIn, isLoading: isLoginLoading, userData, handleLogout, handleUserLogin} = useLogin()
   const { userId, displayName, profileImageUrl } = userData
 
 
@@ -105,38 +102,45 @@ const App = () => {
     })
   }, [])
 
-  if(!isLoggedIn) return <LoggedOut handleLogin={handleUserLogin}/>
+  if(!isLoggedIn) return <LoggedOut handleLogin={handleUserLogin} isLoading={isLoginLoading}/>
 
   return (
     <TwitchProvider userId={userId} isLoggedIn={isLoggedIn}>
+      {({isLoading}) => (
       <FavoritesProvider>
         <Container>
-          <Header>
-            <div>
-              {isLoggedIn &&
-                <UserHeader displayName={displayName} profileImageUrl={profileImageUrl}/>
-              }
-            </div>
-            <ButtonGroup>
-              {/* <Button onClick={() => handleGoToOptionsPage()}></Button> */}
-              <BmcButton />
+          {isLoading
+            ? <Loading />
+            : (
+              <>
+                <Header>
+                  <div>
+                    {isLoggedIn &&
+                      <UserHeader displayName={displayName} profileImageUrl={profileImageUrl}/>
+                    }
+                  </div>
+                  <ButtonGroup>
+                    <BmcButton />
+                  </ButtonGroup>
+                </Header>
 
-            </ButtonGroup>
-          </Header>
+                {isLoggedIn &&
+                  <MainContainer>
+                    <Menu activeRoute={appRoute} handleChangeRoute={handleChangeRoute} handleLogout={handleLogout}/>
 
-            {isLoggedIn &&
-              <MainContainer>
-                <Menu activeRoute={appRoute} handleChangeRoute={handleChangeRoute} handleLogout={handleLogout}/>
+                    <StreamerSection>
+                      {appRoute === '/all' && <ShowAllSections />}
+                      {routes.map(({Component, route, key})=> route === appRoute && <Component key={key} /> )}
+                    </StreamerSection>
 
-                <StreamerSection>
-                  {appRoute === '/all' && <ShowAllSections />}
-                  {routes.map(({Component, route, key})=> route === appRoute && <Component key={key} /> )}
-                </StreamerSection>
-
-              </MainContainer>
-            }
+                  </MainContainer>
+                }
+                </>
+              )
+          }
         </Container>
       </FavoritesProvider>
+      )}
     </TwitchProvider>
 
   )

@@ -8,7 +8,6 @@ const useGames = ({streamsData, isStreamsLoading, isLoggedIn}) =>{
   const [ isGamesLoading, setIsGamesLoading ] = useState(true)
 
   const getGames = useCallback(() => {
-    if(streamsData){
       const gameIds = streamsData?.map(game => game.game_id)
       const uniqueGameIds = [...new Set(gameIds)] // removes duplicate game IDs
       const chunkedArray = chunkArray(uniqueGameIds, 75)
@@ -22,17 +21,23 @@ const useGames = ({streamsData, isStreamsLoading, isLoggedIn}) =>{
             data.forEach((g)=>{
               setGameData(game => [...game,g])
             })
+            setIsGamesLoading(false)
           })
+          .catch(() => setIsGamesLoading(false))
         })
 
       })
       setIsGamesLoading(false)
-    }
+    
+   
   },[streamsData])
 
   useEffect(() => {
     if(streamsData.length > 0 && !isStreamsLoading){
       getGames()
+    }
+    else {
+      setIsGamesLoading(false)
     }
   }, [streamsData, isStreamsLoading, getGames])
 

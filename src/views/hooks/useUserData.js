@@ -26,6 +26,7 @@ const useUserData = ({userFollowsData, isUsersLoading, isLoggedIn}) => {
             })
           })
           .catch((error)=>{
+            setIsGetUserDataLoading(false)
             return new Error(error)
           })
         })

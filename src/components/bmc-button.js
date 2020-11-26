@@ -31,8 +31,10 @@ const StyledBmcButton = styled.a`
 `
 
 const Text = styled.span`
-  font-size: 14px;
-  font-weight: 500;
+  display: block;
+  font-size: ${({size}) => size === "sm" ? '10px' : '14px'};
+  font-weight: ${({bold}) => bold && 500} ;
+  
 `
 
 const BmcButton = () => {
@@ -41,7 +43,10 @@ const BmcButton = () => {
     <StyledBmcButton href="https://www.buymeacoffee.com/tylern" target="_blank">
       <StyledBmcGroup>
         <StyledBmcSvg />
-        <Text>Buy me a coffee</Text>
+        <div>
+          <Text bold>Buy me a coffee</Text>
+          <Text size="sm" >Thank you for your support!</Text>
+        </div>
       </StyledBmcGroup>
     </StyledBmcButton>
   )

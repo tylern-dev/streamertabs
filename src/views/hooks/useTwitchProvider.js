@@ -10,12 +10,12 @@ const TwitchContext = React.createContext({})
 const TwitchProvider = ({userId, isLoggedIn, children}) => {
   const {isUsersLoading, userFollowsData} = useLoadUserFollows({userId, isLoggedIn})
   const {isStreamsLoading, streamsData} = useStreams({userFollowsData, isUsersLoading, isLoggedIn})
-  const { isGamesLoading, gameData} = useGames({streamsData, isStreamsLoading, isLoggedIn})
   const { isGetUserDataLoading, userData } = useUserData({userFollowsData, isUsersLoading, isLoggedIn})
+  const { isGamesLoading, gameData} = useGames({streamsData, isStreamsLoading, isLoggedIn})
 
   const [userStreamingData, setUserStreamingData] = useState([])
 
-  const canReconstructUserObj = [!isStreamsLoading, !isGamesLoading, streamsData.length > 0, gameData.length > 0, userData.length > 0, !isGetUserDataLoading].every(Boolean)
+  const canReconstructUserObj = [!isStreamsLoading, !isGamesLoading, !isGetUserDataLoading].every(Boolean)
 
 
   useEffect(() => {
@@ -32,15 +32,14 @@ const TwitchProvider = ({userId, isLoggedIn, children}) => {
   }, [isLoggedIn])
 
 
-  const isLoading = [isGamesLoading, isStreamsLoading, isUsersLoading, isGetUserDataLoading].every(Boolean)
+  const isLoading = [isGamesLoading, isStreamsLoading, isUsersLoading, isGetUserDataLoading].some(Boolean)
   const liveStreams = userStreamingData.filter(channel => channel?.type === 'live')
   const offlineStreams = userStreamingData.filter( channel => channel?.type !== 'live')
   const values = {isLoading, userStreamingData, liveStreams, offlineStreams}
 
-
   return (
     <TwitchContext.Provider value={values}>
-      {children}
+      {children({isLoading: isLoading})}
     </TwitchContext.Provider>
   )
 }
