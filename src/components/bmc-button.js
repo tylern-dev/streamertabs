@@ -16,7 +16,7 @@ const StyledBmcGroup = styled.div`
 const StyledBmcButton = styled.a`
   border: 1px solid transparent;
   border-radius: 8px;
-  padding: 8px 16px;
+  padding: 8px;
   background-color: transparent;
   color: #efefef;
   margin-right: 8px;
@@ -32,9 +32,9 @@ const StyledBmcButton = styled.a`
 
 const Text = styled.span`
   display: block;
-  font-size: ${({size}) => size === "sm" ? '10px' : '14px'};
+  font-size: ${({size}) => size === "sm" ? '8px' : '12px'};
   font-weight: ${({bold}) => bold && 500} ;
-  
+
 `
 
 const BmcButton = () => {

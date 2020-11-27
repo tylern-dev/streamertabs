@@ -9,8 +9,8 @@ const StyledNav = styled.nav`
   /* grid-template-columns: 1fr; */
   /* align-content: start; */
   /* gap: 4px; */
-  height: 530px;
-  top: 69px;
+  height: 508px;
+  top: 92px;
 
 `
 

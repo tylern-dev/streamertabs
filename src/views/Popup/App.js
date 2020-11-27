@@ -12,16 +12,33 @@ import { TwitchProvider } from '../hooks/useTwitchProvider'
 import { FavoritesProvider } from '../hooks/useFavoritesProvider'
 import UserHeader from '../../components/user-header'
 import BmcButton from '../../components/bmc-button'
+import Input from '../../components/input'
 import Menu from './menu'
+
+
 
 const Header = styled.header`
   display: grid;
   grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 8px;
+  grid-template-areas:
+    "left right"
+    "search search";
   background-color: #1B1B33;
   position: sticky;
   top:0;
   padding: 9px 0;
+  align-items: center;
+
+  & > ${Input}{
+    grid-area: search;
+    justify-self: center;
+    width: 300px;
+  }
 `
+
+
 
 const ButtonGroup = styled.div`
   display: grid;
@@ -119,9 +136,12 @@ const App = () => {
                       <UserHeader displayName={displayName} profileImageUrl={profileImageUrl}/>
                     }
                   </div>
+
                   <ButtonGroup>
                     <BmcButton />
                   </ButtonGroup>
+
+                  <Input placeholder="Search"/>
                 </Header>
 
                 {isLoggedIn &&
