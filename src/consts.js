@@ -10,5 +10,5 @@ export const TWITCH_CLIENT_ID = '8jq2ki0ir3dpbur253h2l3y078finx'
 export const REVOKE_TWITCH_URL = 'https://id.twitch.tv/oauth2/revoke'
 export const TWITCH_USERS_FOLLOWS = `https://api.twitch.tv/helix/users/follows`
 export const TWITCH_GET_STREAMS = 'https://api.twitch.tv/helix/streams'
-export const TWITCH_QUERY_STREAMS = 'https://api.twitch.tv/helix/search/channels'
+export const TWITCH_QUERY_CHANNELS = 'https://api.twitch.tv/helix/search/channels'
 export const TWITCH_GAMES = 'https://api.twitch.tv/helix/games'

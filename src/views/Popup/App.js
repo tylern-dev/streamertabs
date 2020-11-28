@@ -12,7 +12,7 @@ import { TwitchProvider } from '../hooks/useTwitchProvider'
 import { FavoritesProvider } from '../hooks/useFavoritesProvider'
 import UserHeader from '../../components/user-header'
 import BmcButton from '../../components/bmc-button'
-import Input from '../../components/input'
+import Input from '../../components/search-input'
 import Menu from './menu'
 
 

@@ -14,7 +14,6 @@ const FavoritesProvider = ({children}) => {
   }
 
   const setFavorites = (id) => {
-    console.log('offline favorite id', id)
     if(id){
       setFavoriteStreams(streamIds => [...streamIds, id])
       chrome.storage.sync.set({favorites: [...favoriteStreams, id]})

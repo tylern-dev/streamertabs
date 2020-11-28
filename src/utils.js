@@ -1,5 +1,5 @@
 import { cloneElement } from 'react'
-import { TWITCH_USERS_FOLLOWS, TWITCH_GET_STREAMS, TWITCH_QUERY_STREAMS, TWITCH_GAMES, TWITCH_USERS_URL } from './consts'
+import { TWITCH_USERS_FOLLOWS, TWITCH_GET_STREAMS, TWITCH_QUERY_CHANNELS, TWITCH_GAMES, TWITCH_USERS_URL } from './consts'
 
 export const extractStreamerIds = (usersData) => {
   return usersData.map(userData => userData.to_id)
@@ -28,7 +28,7 @@ export const buildStreamsQueryUrl = ({query, first, after: cursor, liveOnly=fals
   if(query instanceof Array){
     query = query.join('&query=')
   }
-  return `${TWITCH_QUERY_STREAMS}?${query ? `query=${query}`:''}${first ? `&first=${first}` : ''}${cursor ? `&after=${cursor}` : ''}&live_only=${liveOnly}`
+  return `${TWITCH_QUERY_CHANNELS}?${query ? `query=${query}`:''}${first ? `&first=${first}` : ''}${cursor ? `&after=${cursor}` : ''}&live_only=${liveOnly}`
 }
 
 export const buildGamesUrl = ({gameId}) => {
