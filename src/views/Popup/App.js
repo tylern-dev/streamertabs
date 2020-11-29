@@ -8,12 +8,14 @@ import Loading from '../../components/loading'
 import OfflineStreams from './offline-streams'
 import Favorites from './favorites'
 import LoggedOut from './logged-out'
+import QueryResults from './query-result'
 import { TwitchProvider } from '../hooks/useTwitchProvider'
 import { FavoritesProvider } from '../hooks/useFavoritesProvider'
 import UserHeader from '../../components/user-header'
 import BmcButton from '../../components/bmc-button'
 import Input from '../../components/search-input'
 import Menu from './menu'
+import { SearchProvider } from '../hooks/useSearchProvider'
 
 
 
@@ -125,40 +127,42 @@ const App = () => {
     <TwitchProvider userId={userId} isLoggedIn={isLoggedIn}>
       {({isLoading}) => (
       <FavoritesProvider>
-        <Container>
-          {isLoading
-            ? <Loading />
-            : (
-              <>
-                <Header>
-                  <div>
+        <SearchProvider>
+          {({shouldShowQueryResults}) => (
+            <Container>
+              {isLoading
+                ? <Loading />
+                : (
+                  <>
+                    <Header>
+                      <div>
+                        {isLoggedIn &&
+                          <UserHeader displayName={displayName} profileImageUrl={profileImageUrl}/>
+                        }
+                      </div>
+                      <ButtonGroup>
+                        <BmcButton />
+                      </ButtonGroup>
+                      <Input placeholder="Search"/>
+                    </Header>
+
                     {isLoggedIn &&
-                      <UserHeader displayName={displayName} profileImageUrl={profileImageUrl}/>
+                      <MainContainer>
+                        <Menu activeRoute={appRoute} handleChangeRoute={handleChangeRoute} handleLogout={handleLogout}/>
+                        {shouldShowQueryResults ? <QueryResults /> : (
+                          <StreamerSection>
+                            {appRoute === '/all' && <ShowAllSections />}
+                            {appRoute !== '/all' && routes.map(({Component, route, key})=> route === appRoute && <Component key={key} /> )}
+                          </StreamerSection>
+                        )}
+                      </MainContainer>
                     }
-                  </div>
-
-                  <ButtonGroup>
-                    <BmcButton />
-                  </ButtonGroup>
-
-                  <Input placeholder="Search"/>
-                </Header>
-
-                {isLoggedIn &&
-                  <MainContainer>
-                    <Menu activeRoute={appRoute} handleChangeRoute={handleChangeRoute} handleLogout={handleLogout}/>
-
-                    <StreamerSection>
-                      {appRoute === '/all' && <ShowAllSections />}
-                      {routes.map(({Component, route, key})=> route === appRoute && <Component key={key} /> )}
-                    </StreamerSection>
-
-                  </MainContainer>
-                }
-                </>
-              )
-          }
-        </Container>
+                    </>
+                  )
+              }
+            </Container>
+          )}
+        </SearchProvider>
       </FavoritesProvider>
       )}
     </TwitchProvider>

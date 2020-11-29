@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import styled from 'styled-components'
 import { HiOutlineSearch } from 'react-icons/hi'
-
+import { useSearch } from '../views/hooks/useSearchProvider'
 const StyledInput = styled.input`
   width: 100%;
   height: 24px;
@@ -49,6 +49,7 @@ const Input = ({
   disabled,
   className
 }) => {
+  const { handleSearchTwitch } = useSearch()
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -61,14 +62,14 @@ const Input = ({
       return acc
     }, {})
 
-    // submit the form data here
+    handleSearchTwitch({query: formData?.search})
   }
 
   return (
     <StyledInputContainer className={className}>
       <StyledForm onSubmit={handleSubmit} >
-        <StyledInput name= "search" id="search" placeholder={placeholder} type={type} disabled={disabled} />
-        <StyledButton type="submit"><HiOutlineSearch /></StyledButton>
+        <StyledInput name="search" id="search" placeholder={placeholder} type={type} disabled={disabled} />
+        <StyledButton type="submit" ><HiOutlineSearch /></StyledButton>
       </StyledForm>
     </StyledInputContainer>
 

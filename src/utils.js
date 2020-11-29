@@ -25,6 +25,7 @@ export const buildStreamsUrl = ({user_id, user_login, game_id, first, before, af
 }
 
 export const buildStreamsQueryUrl = ({query, first, after: cursor, liveOnly=false}) => {
+  console.log('liveOnly', liveOnly)
   if(query instanceof Array){
     query = query.join('&query=')
   }
