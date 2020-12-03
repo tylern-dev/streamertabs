@@ -1,58 +1,61 @@
 import React, { useState, useContext} from 'react'
 import useQueryChannel from '../hooks/useQueryChannels'
+import useUserData from './useUserData'
+import { getGames } from '../../api/getGames'
 const SearchContext = React.createContext({})
 
-const SearchProvider = ({children, }) => {
+const SearchProvider = ({children }) => {
+  const { getUserDataByLoginName } = useUserData({})
   const { handleQueryChannels } = useQueryChannel()
   const [isLoading, setIsLoading] = useState(false)
   const [shouldShowQueryResults, setShouldShowQueryResults] = useState(false)
   const [searchedTerm, setSearchedTerm] = useState('')
   const [queryResult, setQueryResult] = useState([])
   const [paginationCursor, setPaginationCursor] = useState('')
+  const [gameData, setGameData] = useState([])
 
-  const handleSearchTwitch = ({query, isLive}) => {
-    if(query.length > 0){
+  const handleSearchTwitch = ({query, searchedTerm, first}) => {
+    setIsLoading(true)
+    setShouldShowQueryResults(true)
+
+    // need to clear these out if there is a new query. Not if we are loading more
+    if(query){
       setSearchedTerm(query)
-      setIsLoading(true)
-      setShouldShowQueryResults(true)
-
-      handleQueryChannels({searchTerm: query, isLive })
-        .then(({data, pagination}) => {
-          if(data){
-            setQueryResult(data)
-          }
-          if(pagination?.cursor) {
-            setPaginationCursor(pagination?.cursor)
-          }
-          setIsLoading(false)
-
-        })
-        .catch(error => {
-          console.log(error)
-          setIsLoading(false)
-          setShouldShowQueryResults(false)
-        })
+      setQueryResult([])
+      setPaginationCursor('')
     }
+
+    handleQueryChannels({searchTerm: query ?? searchedTerm, first: first ?? 5, cursor: paginationCursor})
+      .then(({data: channelData, pagination}) => {
+        if(channelData){
+          const loginNames = channelData.map(cd => cd?.display_name)
+          getUserDataByLoginName({loginNames}).then((userData) => {
+            const channelDataWithUserData =  channelData.map(cd => Object.assign({}, cd, userData.find(ud => ud.login === cd.display_name)))
+
+            const gameIds = channelDataWithUserData.map(ud => ud?.game_id)
+            if(gameIds.length){
+              getGames(gameIds).then(({data}) => setGameData(gameData => [...gameData, ...data]))
+            }
+
+            setQueryResult(prevData => [...prevData, ...channelDataWithUserData])
+
+          })
+        }
+        if(pagination?.cursor) {
+          setPaginationCursor(pagination?.cursor)
+        }
+        setIsLoading(false)
+
+      })
+      .catch(error => {
+        console.log(error)
+        setIsLoading(false)
+        setShouldShowQueryResults(false)
+      })
   }
 
   const handleShowMoreResults = () => {
-    console.log(searchedTerm, paginationCursor, )
-    handleQueryChannels({searchTerm: searchedTerm, cursor: paginationCursor })
-        .then(({data, pagination}) => {
-          if(data){
-            setQueryResult(prevData => [...prevData, ...data])
-          }
-          if(pagination?.cursor) {
-            setPaginationCursor(pagination?.cursor)
-          }
-          setIsLoading(false)
-
-        })
-        .catch(error => {
-          console.log(error)
-          setIsLoading(false)
-          setShouldShowQueryResults(false)
-        })
+    handleSearchTwitch({searchedTerm: searchedTerm, first: 10})
   }
 
   const handleCloseSearchResults = () => {
@@ -63,7 +66,7 @@ const SearchProvider = ({children, }) => {
   }
 
 
-  const data = {queryResult, handleSearchTwitch, handleCloseSearchResults,handleShowMoreResults, isLoading}
+  const data = {gameData, searchedTerm, queryResult, handleSearchTwitch, handleCloseSearchResults,handleShowMoreResults, isLoading}
 
   return (
     <SearchContext.Provider value={data}>
@@ -73,8 +76,8 @@ const SearchProvider = ({children, }) => {
 }
 
 const useSearch = () => {
-  const {queryResult, handleSearchTwitch, handleCloseSearchResults, handleShowMoreResults, isLoading} = useContext(SearchContext)
-  return {queryResult, handleSearchTwitch, handleCloseSearchResults, handleShowMoreResults, isLoading }
+  const { gameData, searchedTerm, queryResult, handleSearchTwitch, handleCloseSearchResults, handleShowMoreResults, isLoading} = useContext(SearchContext)
+  return { gameData, searchedTerm, queryResult, handleSearchTwitch, handleCloseSearchResults, handleShowMoreResults, isLoading }
 }
 
 export {

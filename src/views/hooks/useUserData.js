@@ -4,12 +4,12 @@ import { getApi } from '../../fetchUtil'
 import {  buildTwitchUsersUrl, chunkArray } from '../../utils'
 
 
-const useUserData = ({userFollowsData, isUsersLoading, isLoggedIn}) => {
+const useUserData = ({userFollowsData = [], isUsersLoading=false, isLoggedIn=false}) => {
     const [isGetUserDataLoading, setIsGetUserDataLoading] = useState()
     const [userData, setUserData] = useState([])
 
     const getUserData = useCallback(() =>{
-      const userIds = userFollowsData.map(ud => ud.to_id)
+      const userIds = userFollowsData?.map(ud => ud.to_id)
       const chunkedArray = chunkArray(userIds, 75)
       chunkedArray.forEach((chunk) =>{
         setIsGetUserDataLoading(true)
@@ -33,6 +33,17 @@ const useUserData = ({userFollowsData, isUsersLoading, isLoggedIn}) => {
       })
     }, [userFollowsData])
 
+    const getUserDataByLoginName = ({loginNames}) => {
+      return new Promise((resolve, reject) => {
+        chrome.storage.local.get([T_TKN], (response) => {
+          getApi({
+            url: buildTwitchUsersUrl({user_logins: loginNames}),
+            accessToken: response[T_TKN]
+          }).then(({data}) => resolve(data)).catch(error => reject(error))
+        })
+      })
+    }
+
     useEffect(() => {
       if(userFollowsData.length > 0 && !isUsersLoading){
         getUserData()
@@ -47,7 +58,8 @@ const useUserData = ({userFollowsData, isUsersLoading, isLoggedIn}) => {
 
     return{
       isGetUserDataLoading,
-      userData
+      userData,
+      getUserDataByLoginName
     }
 
 }

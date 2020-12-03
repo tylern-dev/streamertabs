@@ -5,11 +5,14 @@ export const extractStreamerIds = (usersData) => {
   return usersData.map(userData => userData.to_id)
 }
 
-export const buildTwitchUsersUrl = ({user_id}) => {
+export const buildTwitchUsersUrl = ({user_id, user_logins}) => {
   if(user_id instanceof Array){
     user_id = user_id.join('&id=')
   }
-  return `${TWITCH_USERS_URL}?${user_id ? `id=${user_id}` : ''}`
+  if(user_logins instanceof Array){
+    user_logins = user_logins.join('&login=')
+  }
+  return `${TWITCH_USERS_URL}?${user_id ? `id=${user_id}` : ''}${user_logins ? `login=${user_logins}` : ''}`
 }
 
 export const  buildFollowsUrl = ({after, from_id, first}) => {

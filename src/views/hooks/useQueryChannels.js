@@ -7,12 +7,12 @@ const useQueryChannels = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [queryData, setQueryData] = useState([])
 
-  const handleQueryChannels = ({searchTerm, isLive, cursor}) => {
+  const handleQueryChannels = ({searchTerm, isLive, cursor, first}) => {
     setIsLoading(true)
     return new Promise((resolve, reject) => {
       chrome.storage.local.get([T_TKN], (response) => {
         getApi({
-          url: buildStreamsQueryUrl({query: searchTerm, liveOnly: isLive, after: cursor }),
+          url: buildStreamsQueryUrl({query: searchTerm, liveOnly: isLive, after: cursor, first: first }),
           accessToken: response[T_TKN],
         }).then((response) => {
           setIsLoading(false)
