@@ -1,6 +1,7 @@
 
 import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
+import { Switch, Route } from 'react-router-dom'
 import SettingBtn from '../../icons/settings.svg'
 import useLogin from '../hooks/useLogin'
 import Live from './live'
@@ -16,8 +17,6 @@ import BmcButton from '../../components/bmc-button'
 import Input from '../../components/search-input'
 import Menu from './menu'
 import { SearchProvider } from '../hooks/useSearchProvider'
-
-
 
 const Header = styled.header`
   display: grid;
@@ -40,8 +39,6 @@ const Header = styled.header`
   }
 `
 
-
-
 const ButtonGroup = styled.div`
   display: grid;
   grid-template-columns: auto auto;
@@ -58,24 +55,6 @@ const Container = styled.div`
   min-height: 600px;
 `
 
-const routes = [
-  {
-    route: '/favorites',
-    Component: Favorites,
-    key: 'favorites'
-  },
-  {
-    route: '/live',
-    Component: Live,
-    key: 'live'
-  },
-  {
-    route: '/offline',
-    Component: OfflineStreams,
-    key: 'offline'
-  }
-]
-
 const MainContainer = styled.div`
   display: grid;
   grid-template-columns: auto 1fr;
@@ -86,7 +65,6 @@ const MainContainer = styled.div`
 
 
 const App = () => {
-  const [appRoute, setAppRoute] = useState('/all')
   const {isLoggedIn, isLoading: isLoginLoading, userData, handleLogout, handleUserLogin} = useLogin()
   const { userId, displayName, profileImageUrl } = userData
 
@@ -105,21 +83,6 @@ const App = () => {
       <Live />
       <OfflineStreams />
     </>
-
-  const handleChangeRoute = (route) => {
-    setAppRoute(route)
-    chrome.storage.local.set({lastTab: route})
-  }
-
-  useEffect(() => {
-    chrome.storage.local.get(['lastTab'], ({lastTab}) => {
-      if(!lastTab){
-        setAppRoute('/all')
-      } else {
-        setAppRoute(lastTab)
-      }
-    })
-  }, [])
 
   if(!isLoggedIn) return <LoggedOut handleLogin={handleUserLogin} isLoading={isLoginLoading}/>
 
@@ -148,11 +111,15 @@ const App = () => {
 
                     {isLoggedIn &&
                       <MainContainer>
-                        <Menu activeRoute={appRoute} handleChangeRoute={handleChangeRoute} handleLogout={handleLogout}/>
+                        <Menu handleLogout={handleLogout} />
                         {shouldShowQueryResults ? <QueryResults /> : (
                           <StreamerSection>
-                            {appRoute === '/all' && <ShowAllSections />}
-                            {appRoute !== '/all' && routes.map(({Component, route, key})=> route === appRoute && <Component key={key} /> )}
+                            <Switch>
+                              <Route path="/favorites" component={Favorites} />
+                              <Route path="/live" component={Live} />
+                              <Route path="/offline" component={OfflineStreams} />
+                              <Route path="/" component={ShowAllSections} />
+                            </Switch>
                           </StreamerSection>
                         )}
                       </MainContainer>

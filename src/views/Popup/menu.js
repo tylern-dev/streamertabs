@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Link,  useLocation } from 'react-router-dom'
 import { HiOutlineHome, HiHome, HiOutlineStar, HiStar,  } from 'react-icons/hi'
 import { RiCameraLine, RiCameraOffLine, RiCameraOffFill, RiCameraFill, RiLogoutCircleRLine } from 'react-icons/ri'
 
@@ -49,22 +50,36 @@ const MenuContainer = styled.div`
   height: 100%;
 `
 
-const Menu = ({activeRoute, handleChangeRoute, handleLogout}) => {
+const Menu = ({
+  handleLogout
+}) => {
+
+  const {pathname} = useLocation()
+
   return (
     <StyledNav>
       <MenuContainer>
-        <StyledMenuButton title="All" onClick={() => handleChangeRoute('/all')}>
-          {activeRoute === '/all' ? <HiHome /> : <HiOutlineHome />}
-        </StyledMenuButton>
-        <StyledMenuButton title="Favorites" onClick={() => handleChangeRoute('/favorites')}>
-          {activeRoute === '/favorites' ? <HiStar /> : <HiOutlineStar />}
-        </StyledMenuButton>
-        <StyledMenuButton title="Live" onClick={() => handleChangeRoute('/live')}>
-          {activeRoute === '/live' ? <RiCameraFill /> : <RiCameraLine />}
-        </StyledMenuButton>
-        <StyledMenuButton title="Offline" onClick={() => handleChangeRoute('/offline')}>
-          {activeRoute === '/offline' ? <RiCameraOffFill /> : <RiCameraOffLine />}
-        </StyledMenuButton>
+        <Link to="/">
+          <StyledMenuButton title="All" >
+            {pathname === '/' ? <HiHome /> : <HiOutlineHome />}
+          </StyledMenuButton>
+
+        </Link>
+        <Link to="/favorites">
+          <StyledMenuButton title="Favorites" >
+            {pathname === '/favorites' ? <HiStar /> : <HiOutlineStar />}
+          </StyledMenuButton>
+        </Link>
+        <Link to="/live">
+          <StyledMenuButton title="Live" >
+            {pathname === '/live' ? <RiCameraFill /> : <RiCameraLine />}
+          </StyledMenuButton>
+        </Link>
+        <Link to="/offline">
+          <StyledMenuButton title="Offline" >
+            {pathname === '/offline' ? <RiCameraOffFill /> : <RiCameraOffLine />}
+          </StyledMenuButton>
+        </Link>
         <StyledLogOutButton onClick={() => handleLogout()}>
           <RiLogoutCircleRLine />
         </StyledLogOutButton>
