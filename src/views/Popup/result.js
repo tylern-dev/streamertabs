@@ -47,7 +47,6 @@ const Live = styled.span`
 
 const Result = ({userData, gameData}) => {
   const { is_live, description, title, display_name, profile_image_url} = userData
-  console.log('game Data', gameData)
 
   return(
     <StyledUserHeader>

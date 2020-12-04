@@ -143,7 +143,7 @@ const App = () => {
                       <ButtonGroup>
                         <BmcButton />
                       </ButtonGroup>
-                      <Input placeholder="Search"/>
+                      <Input placeholder="Search Twitch Channels"/>
                     </Header>
 
                     {isLoggedIn &&

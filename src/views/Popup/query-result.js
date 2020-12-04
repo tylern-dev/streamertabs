@@ -20,6 +20,8 @@ const ResultSection = styled.div`
 const QueryResult = () => {
   const {queryResult, gameData, handleShowMoreResults, searchedTerm, isLoading} = useSearch()
 
+  const buildGameData = (userData) => gameData?.find(gd => gd?.id === userData?.game_id)
+
   if(isLoading) return <Loading />
   return (
     <ResultsSectionContainer>
@@ -27,7 +29,7 @@ const QueryResult = () => {
       <ResultSection>
         {!queryResult.length && <b>{`No channels found for "${searchedTerm}" `}</b>}
         {queryResult.map((userData) => (
-          <Result userData={userData} gameData={gameData?.find(gd => gd?.id === userData.game_id)}/>
+          <Result userData={userData} gameData={buildGameData(userData)}/>
         ))}
       </ResultSection>
       <button onClick={() => handleShowMoreResults()}>show more</button>
