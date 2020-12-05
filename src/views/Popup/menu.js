@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { HiOutlineHome, HiHome, HiOutlineStar, HiStar,  } from 'react-icons/hi'
+import { Link, useLocation } from 'react-router-dom'
+import { HiOutlineHome, HiHome, HiOutlineStar, HiStar } from 'react-icons/hi'
 import { RiCameraLine, RiCameraOffLine, RiCameraOffFill, RiCameraFill, RiLogoutCircleRLine } from 'react-icons/ri'
+import { useSearch } from '../hooks/useSearchProvider'
 
 const StyledNav = styled.nav`
   position: sticky;
@@ -9,9 +11,8 @@ const StyledNav = styled.nav`
   /* grid-template-columns: 1fr; */
   /* align-content: start; */
   /* gap: 4px; */
-  height: 530px;
-  top: 69px;
-
+  height: 508px;
+  top: 92px;
 `
 
 const StyledMenuButton = styled.button`
@@ -19,8 +20,8 @@ const StyledMenuButton = styled.button`
   display: flex;
   margin: 0;
   padding: 4px;
-  background-color: #26284A;
-  color: #6D72D6;
+  background-color: #26284a;
+  color: #6d72d6;
   border: none;
   outline: none;
 
@@ -28,14 +29,13 @@ const StyledMenuButton = styled.button`
 
   :hover {
     cursor: pointer;
-    background-color:#1B1B33;
+    background-color: #1b1b33;
   }
 
   :active {
     border: none;
     outline: none;
   }
-
 `
 
 const StyledLogOutButton = styled(StyledMenuButton)`
@@ -49,26 +49,40 @@ const MenuContainer = styled.div`
   height: 100%;
 `
 
-const Menu = ({activeRoute, handleChangeRoute, handleLogout}) => {
+const Menu = ({ handleLogout }) => {
+  const { pathname } = useLocation()
+  const { handleClearSearch, searchedTerm } = useSearch()
+
+  useEffect(() => {
+    if (pathname !== '/search' && searchedTerm) {
+      handleClearSearch()
+    }
+  }, [handleClearSearch, pathname, searchedTerm])
+
   return (
     <StyledNav>
       <MenuContainer>
-        <StyledMenuButton title="All" onClick={() => handleChangeRoute('/all')}>
-          {activeRoute === '/all' ? <HiHome /> : <HiOutlineHome />}
-        </StyledMenuButton>
-        <StyledMenuButton title="Favorites" onClick={() => handleChangeRoute('/favorites')}>
-          {activeRoute === '/favorites' ? <HiStar /> : <HiOutlineStar />}
-        </StyledMenuButton>
-        <StyledMenuButton title="Live" onClick={() => handleChangeRoute('/live')}>
-          {activeRoute === '/live' ? <RiCameraFill /> : <RiCameraLine />}
-        </StyledMenuButton>
-        <StyledMenuButton title="Offline" onClick={() => handleChangeRoute('/offline')}>
-          {activeRoute === '/offline' ? <RiCameraOffFill /> : <RiCameraOffLine />}
-        </StyledMenuButton>
+        <Link to="/">
+          <StyledMenuButton title="All">
+            {pathname === '/' || pathname === '/popup.html' ? <HiHome /> : <HiOutlineHome />}
+          </StyledMenuButton>
+        </Link>
+        <Link to="/favorites">
+          <StyledMenuButton title="Favorites">
+            {pathname === '/favorites' ? <HiStar /> : <HiOutlineStar />}
+          </StyledMenuButton>
+        </Link>
+        <Link to="/live">
+          <StyledMenuButton title="Live">{pathname === '/live' ? <RiCameraFill /> : <RiCameraLine />}</StyledMenuButton>
+        </Link>
+        <Link to="/offline">
+          <StyledMenuButton title="Offline">
+            {pathname === '/offline' ? <RiCameraOffFill /> : <RiCameraOffLine />}
+          </StyledMenuButton>
+        </Link>
         <StyledLogOutButton onClick={() => handleLogout()}>
           <RiLogoutCircleRLine />
         </StyledLogOutButton>
-
       </MenuContainer>
     </StyledNav>
   )

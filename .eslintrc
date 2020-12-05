@@ -1,0 +1,28 @@
+{
+  "extends": ["plugin:prettier/recommended", "standard", "standard-jsx", "prettier"],
+  "plugins": ["jest", "react-hooks", "prettier"],
+  "parser": "babel-eslint",
+  "env": {
+    "jest/globals": true,
+    "browser": true,
+    "webextensions": true
+  },
+  "rules": {
+    "prefer-promise-reject-errors": ["off"],
+    "prettier/prettier": ["error"],
+    "react-hooks/rules-of-hooks": ["error"],
+    "react-hooks/exhaustive-deps": ["warn"],
+    "react/jsx-indent": ["off"],
+    "react/jsx-pascal-case": [1, { "allowAllCaps": true  }],
+    "react/jsx-curly-newline": 0,
+    "react/jsx-handler-names": [1, { "checkInlineFunction": false }],
+    "camelcase": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "detect",
+    },
+  },
+
+
+}
