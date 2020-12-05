@@ -15,7 +15,7 @@ const StyledChannelInfo = styled.div`
 `
 
 const StyledUserHeader = styled.div`
-  display:grid;
+  display: grid;
   grid-template-columns: auto 1fr;
   gap: 16px;
   align-items: start;
@@ -26,8 +26,8 @@ const StyledUserName = styled.a`
   font-size: 1.6em;
   font-weight: 600;
   color: #fefefe;
-  &:hover{
-    color: #6D72D6;
+  &:hover {
+    color: #6d72d6;
   }
 `
 const StyledImgLink = styled.a`
@@ -41,25 +41,31 @@ const ImageContainer = styled.div`
 `
 
 const Live = styled.span`
-  color: #FF1719;
+  color: #ff1719;
   font-weight: 600;
 `
 
-const Result = ({userData, gameData}) => {
-  const { is_live, description, title, display_name, profile_image_url} = userData
+const Result = ({ userData, gameData }) => {
+  const { is_live, description, title, display_name, profile_image_url } = userData
 
-  return(
+  return (
     <StyledUserHeader>
       <ImageContainer>
         <StyledImgLink href={`${TWITCH_TV}${display_name?.toLowerCase()}`} target="_blank" rel="noopener noreferrer">
-          <StyledProfileImage src={profile_image_url}/>
+          <StyledProfileImage src={profile_image_url} />
         </StyledImgLink>
-        {is_live && <Live>Live</Live> }
+        {is_live && <Live>Live</Live>}
       </ImageContainer>
       <StyledChannelInfo>
-        <StyledUserName href={`${TWITCH_TV}${display_name?.toLowerCase()}`} target="_blank" rel="noopener noreferrer">{display_name}</StyledUserName>
+        <StyledUserName href={`${TWITCH_TV}${display_name?.toLowerCase()}`} target="_blank" rel="noopener noreferrer">
+          {display_name}
+        </StyledUserName>
         {is_live && <ChannelDescription>{gameData?.name}</ChannelDescription>}
-        {is_live ? <ChannelDescription>{title}</ChannelDescription> : <ChannelDescription>{description}</ChannelDescription>}
+        {is_live ? (
+          <ChannelDescription>{title}</ChannelDescription>
+        ) : (
+          <ChannelDescription>{description}</ChannelDescription>
+        )}
       </StyledChannelInfo>
     </StyledUserHeader>
   )

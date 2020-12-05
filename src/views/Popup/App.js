@@ -1,8 +1,6 @@
-
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Switch, Route } from 'react-router-dom'
-import SettingBtn from '../../icons/settings.svg'
 import useLogin from '../hooks/useLogin'
 import Live from './live'
 import Loading from '../../components/loading'
@@ -24,15 +22,15 @@ const Header = styled.header`
   grid-template-rows: 1fr auto;
   gap: 8px;
   grid-template-areas:
-    "left right"
-    "search search";
-  background-color: #1B1B33;
+    'left right'
+    'search search';
+  background-color: #1b1b33;
   position: sticky;
-  top:0;
+  top: 0;
   padding: 9px 0;
   align-items: center;
 
-  & > ${Input}{
+  & > ${Input} {
     grid-area: search;
     justify-self: center;
     width: 300px;
@@ -61,83 +59,72 @@ const MainContainer = styled.div`
   gap: 8px;
 `
 
-
-
-
 const App = () => {
-  const {isLoggedIn, isLoading: isLoginLoading, userData, handleLogout, handleUserLogin} = useLogin()
+  const { isLoggedIn, isLoading: isLoginLoading, userData, handleLogout, handleUserLogin } = useLogin()
   const { userId, displayName, profileImageUrl } = userData
 
+  // const handleGoToOptionsPage = () => {
+  //   if (chrome.runtime.openOptionsPage) {
+  //     chrome.runtime.openOptionsPage()
+  //   } else {
+  //     window.open(chrome.runtime.getURL('options.html'))
+  //   }
+  // }
 
-  const handleGoToOptionsPage = () => {
-    if (chrome.runtime.openOptionsPage) {
-      chrome.runtime.openOptionsPage();
-    } else {
-      window.open(chrome.runtime.getURL('options.html'));
-    }
-  }
-
-  const ShowAllSections = () =>
+  const ShowAllSections = () => (
     <>
       <Favorites />
       <Live />
       <OfflineStreams />
     </>
+  )
 
-  if(!isLoggedIn) return <LoggedOut handleLogin={handleUserLogin} isLoading={isLoginLoading}/>
+  if (!isLoggedIn) return <LoggedOut handleLogin={handleUserLogin} isLoading={isLoginLoading} />
 
   return (
     <TwitchProvider userId={userId} isLoggedIn={isLoggedIn}>
-      {({isLoading}) => (
-      <FavoritesProvider>
-        <SearchProvider>
-
+      {({ isLoading }) => (
+        <FavoritesProvider>
+          <SearchProvider>
             <Container>
-              {isLoading
-                ? <Loading />
-                : (
-                  <>
-                    <Header>
-                      <div>
-                        {isLoggedIn &&
-                          <UserHeader displayName={displayName} profileImageUrl={profileImageUrl}/>
-                        }
-                      </div>
-                      <ButtonGroup>
-                        <BmcButton />
-                      </ButtonGroup>
-                      <Input placeholder="Search Twitch Channels"/>
-                    </Header>
+              {isLoading ? (
+                <Loading />
+              ) : (
+                <>
+                  <Header>
+                    <div>
+                      {isLoggedIn && <UserHeader displayName={displayName} profileImageUrl={profileImageUrl} />}
+                    </div>
+                    <ButtonGroup>
+                      <BmcButton />
+                    </ButtonGroup>
+                    <Input placeholder="Search Twitch Channels" />
+                  </Header>
 
-                    {isLoggedIn &&
-                      <MainContainer>
-                        <Menu handleLogout={handleLogout} />
+                  {isLoggedIn && (
+                    <MainContainer>
+                      <Menu handleLogout={handleLogout} />
 
-                          <StreamerSection>
-                            <Switch>
-                              {/* working on this search */}
-                              <Route path="/search" component={QueryResults} />
-                              <Route path="/favorites" component={Favorites} />
-                              <Route path="/live" component={Live} />
-                              <Route path="/offline" component={OfflineStreams} />
-                              <Route path="/" component={ShowAllSections} />
-                            </Switch>
-                          </StreamerSection>
-
-                      </MainContainer>
-                    }
-                    </>
-                  )
-              }
+                      <StreamerSection>
+                        <Switch>
+                          {/* working on this search */}
+                          <Route path="/search" component={QueryResults} />
+                          <Route path="/favorites" component={Favorites} />
+                          <Route path="/live" component={Live} />
+                          <Route path="/offline" component={OfflineStreams} />
+                          <Route path="/" component={ShowAllSections} />
+                        </Switch>
+                      </StreamerSection>
+                    </MainContainer>
+                  )}
+                </>
+              )}
             </Container>
-
-        </SearchProvider>
-      </FavoritesProvider>
+          </SearchProvider>
+        </FavoritesProvider>
       )}
     </TwitchProvider>
-
   )
 }
-
 
 export default App

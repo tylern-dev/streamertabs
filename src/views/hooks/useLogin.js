@@ -1,86 +1,82 @@
 import { useState, useEffect } from 'react'
-import {T_TKN, TWITCH_CLIENT_ID, TWITCH_USERS_URL, TWITCH_VALIDATE_URL, REVOKE_TWITCH_URL} from '../../consts'
-import { postApi } from '../../fetchUtil'
+import { T_TKN, TWITCH_CLIENT_ID, TWITCH_USERS_URL, REVOKE_TWITCH_URL } from '../../consts'
 
 const useLogin = () => {
-
-  const [ isLoggedIn, setIsLoggedIn ] = useState()
-  const [ isLoading, setIsLoading ] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState()
+  const [isLoading, setIsLoading] = useState(false)
   const [userData, setUserData] = useState({})
 
   const getUserObj = () => {
-
-    chrome.storage.local.get([T_TKN], (result) =>{
-      fetch(TWITCH_USERS_URL,{
+    chrome.storage.local.get([T_TKN], (result) => {
+      fetch(TWITCH_USERS_URL, {
         method: 'get',
         headers: {
-          "Authorization": `Bearer ${result[T_TKN] }`,
-          "Client-Id": TWITCH_CLIENT_ID
+          Authorization: `Bearer ${result[T_TKN]}`,
+          'Client-Id': TWITCH_CLIENT_ID,
         },
-      }).then(response => {
-        if(response.status === 200){
-          response.json().then(({data}) => {
-            const {id, display_name, profile_image_url} = data?.[0] ?? {}
+      }).then((response) => {
+        if (response.status === 200) {
+          response.json().then(({ data }) => {
+            const { id, display_name, profile_image_url } = data?.[0] ?? {}
             setUserData({
               userId: id,
               displayName: display_name,
-              profileImageUrl: profile_image_url
+              profileImageUrl: profile_image_url,
             })
             setIsLoggedIn(true)
           })
-
-        }
-        else setIsLoggedIn(false)
+        } else setIsLoggedIn(false)
       })
-
     })
   }
   useEffect(() => {
     chrome.storage.local.get([T_TKN], (result) => {
-      if(result[T_TKN]){
+      if (result[T_TKN]) {
         getUserObj()
       }
     })
-
   }, [isLoggedIn])
 
-
-
   const buildAccessUrl = (url) => {
-    if(url){
-      const access_token = url.match(/#(?:access_token)=([\S\s]*?)&/)[1];
-      chrome.storage.local.set({[T_TKN]: access_token})
+    if (url) {
+      const access_token = url.match(/#(?:access_token)=([\S\s]*?)&/)[1]
+      chrome.storage.local.set({ [T_TKN]: access_token })
       return Promise.resolve()
     }
   }
 
   const handleUserLogin = () => {
     setIsLoading(true)
-    chrome.identity.launchWebAuthFlow({
-      'url': `https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TWITCH_CLIENT_ID}&redirect_uri=https://${chrome.runtime.id}.chromiumapp.org/provider_cb&scope=viewing_activity_read&force_verify=true`, 'interactive': true
-    }, (redirect_url) => {
-      buildAccessUrl(redirect_url)
-        .then(() =>{
-          getUserObj()
-          setIsLoggedIn(true)
-          setIsLoading(false)
-        }).catch(() => {
-          setIsLoading(false)
-          setIsLoggedIn(false)
-        })
-     });
+    chrome.identity.launchWebAuthFlow(
+      {
+        url: `https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TWITCH_CLIENT_ID}&redirect_uri=https://${chrome.runtime.id}.chromiumapp.org/provider_cb&scope=viewing_activity_read&force_verify=true`,
+        interactive: true,
+      },
+      (redirect_url) => {
+        buildAccessUrl(redirect_url)
+          .then(() => {
+            getUserObj()
+            setIsLoggedIn(true)
+            setIsLoading(false)
+          })
+          .catch(() => {
+            setIsLoading(false)
+            setIsLoggedIn(false)
+          })
+      }
+    )
   }
 
   const handleLogout = () => {
-    chrome.storage.local.get([T_TKN], (result)=>{
-      if(result[T_TKN]){
+    chrome.storage.local.get([T_TKN], (result) => {
+      if (result[T_TKN]) {
         fetch(`${REVOKE_TWITCH_URL}?client_id=${TWITCH_CLIENT_ID}&token=${result[T_TKN]}`, {
-          method: 'POST'
+          method: 'POST',
         }).then((response) => {
-          if(response.status === 200){
+          if (response.status === 200) {
             setIsLoggedIn(false)
             setUserData({})
-            chrome.storage.local.set({[T_TKN]: ''})
+            chrome.storage.local.set({ [T_TKN]: '' })
           }
         })
       }
@@ -92,7 +88,7 @@ const useLogin = () => {
     isLoading,
     userData,
     handleUserLogin,
-    handleLogout
+    handleLogout,
   }
 }
 

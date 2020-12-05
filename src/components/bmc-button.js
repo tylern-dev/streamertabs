@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import {ReactComponent as BmcSvg } from '../icons/bmc-logo.svg'
+import { ReactComponent as BmcSvg } from '../icons/bmc-logo.svg'
 
 const StyledBmcSvg = styled(BmcSvg)`
   height: 20px;
@@ -25,27 +25,25 @@ const StyledBmcButton = styled.a`
   transition: border 0.5s ease;
 
   :hover {
-    border: 1px solid  #6D72D6;
+    border: 1px solid #6d72d6;
     border-radius: 8px;
   }
 `
 
 const Text = styled.span`
   display: block;
-  font-size: ${({size}) => size === "sm" ? '8px' : '12px'};
-  font-weight: ${({bold}) => bold && 500} ;
-
+  font-size: ${({ size }) => (size === 'sm' ? '8px' : '12px')};
+  font-weight: ${({ bold }) => bold && 500};
 `
 
 const BmcButton = () => {
-
   return (
     <StyledBmcButton href="https://www.buymeacoffee.com/tylern" target="_blank">
       <StyledBmcGroup>
         <StyledBmcSvg />
         <div>
           <Text bold>Buy me a coffee</Text>
-          <Text size="sm" >Thank you for your support!</Text>
+          <Text size="sm">Thank you for your support!</Text>
         </div>
       </StyledBmcGroup>
     </StyledBmcButton>

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import {TWITCH_TV} from '../../consts'
+import { TWITCH_TV } from '../../consts'
 import { useFavorites } from '../hooks/useFavoritesProvider'
 import { useTwitch } from '../hooks/useTwitchProvider'
 import StreamInfo from './stream-info'
@@ -9,47 +9,47 @@ import Empty from './empty'
 
 const StyledOpenAllFavorites = styled.button`
   border: 0;
-  border: 1px solid #6D72D6;
+  border: 1px solid #6d72d6;
   background: transparent;
-  color: #6D72D6;
+  color: #6d72d6;
   border-radius: 5px;
 
-  transition: color,border 0.5s ease;
+  transition: color, border 0.5s ease;
 
-  :hover{
+  :hover {
     cursor: pointer;
-    color: #6D95ED;
-    border: 1px solid #6D95ED;
+    color: #6d95ed;
+    border: 1px solid #6d95ed;
     border-radius: 5px;
   }
 `
 
 const Favorites = () => {
-  const {liveStreams} = useTwitch()
-  const { favoriteStreams, clearAllFavorites } = useFavorites()
+  const { liveStreams } = useTwitch()
+  const { favoriteStreams } = useFavorites()
 
   const liveFavorites = liveStreams.filter((ls) => favoriteStreams.includes(ls.id))
 
   const handleOpenAllStreams = () => {
     liveFavorites.forEach((favorite) => {
       chrome.tabs.create({
-        url: `${TWITCH_TV}${favorite.login}`
+        url: `${TWITCH_TV}${favorite.login}`,
       })
     })
   }
 
-  return(
-    <StreamSection section="Favorites" count={liveFavorites.length} >
-      {liveFavorites.length > 0 ?
+  return (
+    <StreamSection section="Favorites" count={liveFavorites.length}>
+      {liveFavorites.length > 0 ? (
         <>
-          <StyledOpenAllFavorites onClick={() => handleOpenAllStreams() }>Open favorites</StyledOpenAllFavorites>
+          <StyledOpenAllFavorites onClick={() => handleOpenAllStreams()}>Open favorites</StyledOpenAllFavorites>
           {/* <button onClick={() => clearAllFavorites()}>Clear all favorites</button> */}
         </>
-        : <Empty />
-      }
+      ) : (
+        <Empty />
+      )}
       <StreamInfo streamData={liveFavorites} />
     </StreamSection>
-
   )
 }
 
