@@ -91,7 +91,7 @@ const App = () => {
       {({isLoading}) => (
       <FavoritesProvider>
         <SearchProvider>
-          {({shouldShowQueryResults}) => (
+
             <Container>
               {isLoading
                 ? <Loading />
@@ -112,23 +112,25 @@ const App = () => {
                     {isLoggedIn &&
                       <MainContainer>
                         <Menu handleLogout={handleLogout} />
-                        {shouldShowQueryResults ? <QueryResults /> : (
+
                           <StreamerSection>
                             <Switch>
+                              {/* working on this search */}
+                              <Route path="/search" component={QueryResults} />
                               <Route path="/favorites" component={Favorites} />
                               <Route path="/live" component={Live} />
                               <Route path="/offline" component={OfflineStreams} />
                               <Route path="/" component={ShowAllSections} />
                             </Switch>
                           </StreamerSection>
-                        )}
+
                       </MainContainer>
                     }
                     </>
                   )
               }
             </Container>
-          )}
+
         </SearchProvider>
       </FavoritesProvider>
       )}

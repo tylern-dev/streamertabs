@@ -8,7 +8,7 @@ const SearchProvider = ({children }) => {
   const { getUserDataByLoginName } = useUserData({})
   const { handleQueryChannels } = useQueryChannel()
   const [isLoading, setIsLoading] = useState(false)
-  const [shouldShowQueryResults, setShouldShowQueryResults] = useState(false)
+  // const [shouldShowQueryResults, setShouldShowQueryResults] = useState(false)
   const [searchedTerm, setSearchedTerm] = useState('')
   const [queryResult, setQueryResult] = useState([])
   const [paginationCursor, setPaginationCursor] = useState('')
@@ -16,7 +16,6 @@ const SearchProvider = ({children }) => {
 
   const handleSearchTwitch = ({query, searchedTerm, first}) => {
     setIsLoading(true)
-    setShouldShowQueryResults(true)
 
     // need to clear these out if there is a new query. Not if we are loading more
     if(query){
@@ -25,7 +24,11 @@ const SearchProvider = ({children }) => {
       setPaginationCursor('')
     }
 
-    handleQueryChannels({searchTerm: query ?? searchedTerm, first: first ?? 5, cursor: paginationCursor})
+    handleQueryChannels({
+      searchTerm: query ?? searchedTerm,
+      first: first ?? 5,
+      cursor: paginationCursor
+    })
       .then(({data: channelData, pagination}) => {
         if(channelData){
           const loginNames = channelData.map(cd => cd?.display_name)
@@ -36,21 +39,17 @@ const SearchProvider = ({children }) => {
             if(gameIds.length){
               getGames(gameIds).then(({data}) => setGameData(gameData => [...gameData, ...data]))
             }
-
             setQueryResult(prevData => [...prevData, ...channelDataWithUserData])
-
           })
         }
         if(pagination?.cursor) {
           setPaginationCursor(pagination?.cursor)
         }
         setIsLoading(false)
-
       })
       .catch(error => {
         console.log(error)
         setIsLoading(false)
-        setShouldShowQueryResults(false)
       })
   }
 
@@ -58,26 +57,25 @@ const SearchProvider = ({children }) => {
     handleSearchTwitch({searchedTerm: searchedTerm, first: 10})
   }
 
-  const handleCloseSearchResults = () => {
-    setShouldShowQueryResults(false)
+  const handleClearSearch = () => {
     setSearchedTerm('')
     setQueryResult([])
     setPaginationCursor('')
   }
 
 
-  const data = {gameData, searchedTerm, queryResult, handleSearchTwitch, handleCloseSearchResults,handleShowMoreResults, isLoading}
+  const data = {gameData, searchedTerm, queryResult, handleSearchTwitch, handleClearSearch,handleShowMoreResults, isLoading}
 
   return (
     <SearchContext.Provider value={data}>
-      {children({ shouldShowQueryResults })}
+      {children}
     </SearchContext.Provider>
   )
 }
 
 const useSearch = () => {
-  const { gameData, searchedTerm, queryResult, handleSearchTwitch, handleCloseSearchResults, handleShowMoreResults, isLoading} = useContext(SearchContext)
-  return { gameData, searchedTerm, queryResult, handleSearchTwitch, handleCloseSearchResults, handleShowMoreResults, isLoading }
+  const { gameData, searchedTerm, queryResult, handleSearchTwitch, handleClearSearch, handleShowMoreResults, isLoading} = useContext(SearchContext)
+  return { gameData, searchedTerm, queryResult, handleSearchTwitch, handleClearSearch, handleShowMoreResults, isLoading }
 }
 
 export {

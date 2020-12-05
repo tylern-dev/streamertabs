@@ -1,4 +1,5 @@
-import React, {useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import styled from 'styled-components'
 import { HiOutlineSearch } from 'react-icons/hi'
 import { useSearch } from '../views/hooks/useSearchProvider'
@@ -50,25 +51,29 @@ const Input = ({
   className
 }) => {
   const { handleSearchTwitch } = useSearch()
+  const [searchTerm, setSearchTerm] = useState('')
+  const history = useHistory()
+  const location = useLocation()
+
+
+console.log('history', history)
+
+  const handleChange = (event) => {
+
+    setSearchTerm(event.target.value)
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    const elementsArray = [...event.target.elements]
-    const formData = elementsArray.reduce((acc, elem) => {
-      if(elem.id){
-        acc[elem.id] = elem.value
-      }
-      return acc
-    }, {})
-
-    handleSearchTwitch({query: formData?.search})
+    history.push('/search')
+    handleSearchTwitch({query: searchTerm})
   }
 
   return (
     <StyledInputContainer className={className}>
       <StyledForm onSubmit={handleSubmit} >
-        <StyledInput name="search" id="search" placeholder={placeholder} type={type} disabled={disabled} />
+        <StyledInput name="search" onChange={handleChange} value={searchTerm} placeholder={placeholder} type={type} disabled={disabled} />
         <StyledButton type="submit" ><HiOutlineSearch /></StyledButton>
       </StyledForm>
     </StyledInputContainer>

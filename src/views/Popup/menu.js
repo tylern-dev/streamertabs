@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Link,  useLocation } from 'react-router-dom'
 import { HiOutlineHome, HiHome, HiOutlineStar, HiStar,  } from 'react-icons/hi'
 import { RiCameraLine, RiCameraOffLine, RiCameraOffFill, RiCameraFill, RiLogoutCircleRLine } from 'react-icons/ri'
+import { useSearch } from '../hooks/useSearchProvider'
 
 const StyledNav = styled.nav`
   position: sticky;
@@ -53,15 +54,21 @@ const MenuContainer = styled.div`
 const Menu = ({
   handleLogout
 }) => {
-
   const {pathname} = useLocation()
+  const { handleClearSearch, searchedTerm } = useSearch()
+
+  useEffect(() => {
+    if(pathname !== '/search' && searchedTerm){
+      handleClearSearch()
+    }
+  }, [handleClearSearch, pathname, searchedTerm])
 
   return (
     <StyledNav>
       <MenuContainer>
         <Link to="/">
           <StyledMenuButton title="All" >
-            {pathname === '/' ? <HiHome /> : <HiOutlineHome />}
+            {pathname === '/' || pathname==='/popup.html' ? <HiHome /> : <HiOutlineHome />}
           </StyledMenuButton>
 
         </Link>
