@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { useSearch } from '../hooks/useSearchProvider'
 import Result from './result'
 import Loading from '../../components/loading'
+
+import { useTwitch } from '../hooks/useTwitchProvider'
 const StyledHeader = styled.h1`
   color: #efefef;
 `
@@ -19,8 +21,12 @@ const ResultSection = styled.div`
 `
 const QueryResult = () => {
   const { queryResult, gameData, handleShowMoreResults, searchedTerm, isLoading } = useSearch()
+  const { userFollowsData } = useTwitch()
+  // console.log('queryResult', queryResult)
+  // console.log('userFollowsData', userFollowsData)
 
   const buildGameData = (userData) => gameData?.find((gd) => gd?.id === userData?.game_id)
+  const getFollowingUserData = (userData) => userFollowsData?.find((ufd) => ufd.to_id === userData?.id)
 
   if (isLoading) return <Loading />
   return (
@@ -29,7 +35,12 @@ const QueryResult = () => {
       <ResultSection>
         {!queryResult.length && <b>{`No channels found for "${searchedTerm}" `}</b>}
         {queryResult.map((userData, index) => (
-          <Result userData={userData} gameData={buildGameData(userData)} key={index} />
+          <Result
+            userData={userData}
+            gameData={buildGameData(userData)}
+            followingUserData={getFollowingUserData(userData)}
+            key={index}
+          />
         ))}
       </ResultSection>
       <button onClick={() => handleShowMoreResults()}>show more</button>

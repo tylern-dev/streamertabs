@@ -30,10 +30,10 @@ export const getApi = ({ url = '', accessToken, queryParams = {}, method = '', i
   })
 }
 
-export const postApi = ({ url = '', accessToken, queryParams = {}, method = '', isOauth }) => {
+export const postApi = ({ url = '', method = 'post', accessToken, isOauth }) => {
   return new Promise((resolve, reject) => {
     fetch(url, {
-      method: 'POST',
+      method: method,
       headers: {
         Authorization: `${isOauth ? 'OAuth ' : 'Bearer '}${accessToken}`,
         'Client-Id': `${TWITCH_CLIENT_ID}`,

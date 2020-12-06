@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Link, useLocation } from 'react-router-dom'
-import { HiOutlineHome, HiHome, HiOutlineStar, HiStar } from 'react-icons/hi'
+import { HiOutlineHome, HiHome, HiOutlineStar, HiStar, HiSearch, HiOutlineSearch } from 'react-icons/hi'
 import { RiCameraLine, RiCameraOffLine, RiCameraOffFill, RiCameraFill, RiLogoutCircleRLine } from 'react-icons/ri'
 import { useSearch } from '../hooks/useSearchProvider'
 
@@ -65,6 +65,11 @@ const Menu = ({ handleLogout }) => {
         <Link to="/">
           <StyledMenuButton title="All">
             {pathname === '/' || pathname === '/popup.html' ? <HiHome /> : <HiOutlineHome />}
+          </StyledMenuButton>
+        </Link>
+        <Link to="/search">
+          <StyledMenuButton title="Search Twitch Channels">
+            {pathname === '/search' ? <HiSearch /> : <HiOutlineSearch />}
           </StyledMenuButton>
         </Link>
         <Link to="/favorites">

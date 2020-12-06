@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+
 import { TWITCH_TV } from '../../consts'
 const StyledProfileImage = styled.img`
   border-radius: 25px;
@@ -16,7 +17,7 @@ const StyledChannelInfo = styled.div`
 
 const StyledUserHeader = styled.div`
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   gap: 16px;
   align-items: start;
 `
@@ -45,9 +46,10 @@ const Live = styled.span`
   font-weight: 600;
 `
 
-const Result = ({ userData, gameData }) => {
+const Result = ({ userData, gameData, followingUserData }) => {
   const { is_live, description, title, display_name, profile_image_url } = userData
 
+  console.log('followingUserId', followingUserData)
   return (
     <StyledUserHeader>
       <ImageContainer>
@@ -67,6 +69,7 @@ const Result = ({ userData, gameData }) => {
           <ChannelDescription>{description}</ChannelDescription>
         )}
       </StyledChannelInfo>
+      {/* <button onClick={() => }>Follow</button> */}
     </StyledUserHeader>
   )
 }
