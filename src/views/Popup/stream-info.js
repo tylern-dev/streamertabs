@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import LazyLoad from 'react-lazyload'
 import { TWITCH_TV } from '../../consts'
 import { useFavorites } from '../hooks/useFavoritesProvider'
 import { HiStar, HiOutlineStar, HiUserGroup } from 'react-icons/hi'
@@ -97,16 +98,16 @@ const StreamInfo = ({ streamData }) => {
   }
 
   return (
-    <>
-      <StyledUl>
-        {streamData &&
-          streamData.map(
-            ({ display_name, viewer_count, title, thumbnail_url, type, id, name, box_art_url, profile_image_url }) => {
-              box_art_url = box_art_url?.replace('-{width}x{height}', '')
-              thumbnail_url = thumbnail_url?.replace('-{width}x{height}', '')
-              const favorited = favoriteStreams.includes(id)
-              return (
-                <StyledListItem key={id}>
+    <StyledUl>
+      {streamData &&
+        streamData.map(
+          ({ display_name, viewer_count, title, thumbnail_url, type, id, name, box_art_url, profile_image_url }) => {
+            box_art_url = box_art_url?.replace('-{width}x{height}', '')
+            thumbnail_url = thumbnail_url?.replace('-{width}x{height}', '')
+            const favorited = favoriteStreams.includes(id)
+            return (
+              <LazyLoad height="100%" offset={100} key={id} once>
+                <StyledListItem>
                   <StyledStreamHeader>
                     <StyledImgLink
                       href={`${TWITCH_TV}${display_name?.toLowerCase()}`}
@@ -144,11 +145,11 @@ const StreamInfo = ({ streamData }) => {
                     </StyledFavoriteBtn>
                   </StyledStreamHeader>
                 </StyledListItem>
-              )
-            }
-          )}
-      </StyledUl>
-    </>
+              </LazyLoad>
+            )
+          }
+        )}
+    </StyledUl>
   )
 }
 
