@@ -49,7 +49,7 @@ const useLogin = () => {
     setIsLoading(true)
     chrome.identity.launchWebAuthFlow(
       {
-        url: `https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TWITCH_CLIENT_ID}&redirect_uri=https://${chrome.runtime.id}.chromiumapp.org/provider_cb&scope=viewing_activity_read&force_verify=true`,
+        url: `https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TWITCH_CLIENT_ID}&scope=user:edit:follows&redirect_uri=https://${chrome.runtime.id}.chromiumapp.org/provider_cb&scope=viewing_activity_read&force_verify=true`,
         interactive: true,
       },
       (redirect_url) => {

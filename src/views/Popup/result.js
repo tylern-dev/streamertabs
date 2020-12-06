@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-
+import { useTwitch } from '../hooks/useTwitchProvider'
 import { TWITCH_TV } from '../../consts'
 const StyledProfileImage = styled.img`
   border-radius: 25px;
@@ -9,17 +9,6 @@ const StyledProfileImage = styled.img`
 
 const ChannelDescription = styled.span`
   color: #ccc;
-`
-
-const StyledChannelInfo = styled.div`
-  display: grid;
-`
-
-const StyledUserHeader = styled.div`
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 16px;
-  align-items: start;
 `
 
 const StyledUserName = styled.a`
@@ -31,6 +20,21 @@ const StyledUserName = styled.a`
     color: #6d72d6;
   }
 `
+
+const StyledChannelInfo = styled.div`
+  display: grid;
+  ${StyledUserName} {
+    padding-bottom: 8px;
+  }
+`
+
+const StyledUserHeader = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: start;
+`
+
 const StyledImgLink = styled.a`
   height: calc(100% - 18px);
 `
@@ -48,8 +52,10 @@ const Live = styled.span`
 
 const Result = ({ userData, gameData, followingUserData }) => {
   const { is_live, description, title, display_name, profile_image_url } = userData
+  const { to_id } = followingUserData ?? {}
 
-  console.log('followingUserId', followingUserData)
+  const { handleDeleteFollow } = useTwitch()
+
   return (
     <StyledUserHeader>
       <ImageContainer>
@@ -69,7 +75,7 @@ const Result = ({ userData, gameData, followingUserData }) => {
           <ChannelDescription>{description}</ChannelDescription>
         )}
       </StyledChannelInfo>
-      {/* <button onClick={() => }>Follow</button> */}
+      <button onClick={() => handleDeleteFollow({ toId: to_id })}>{followingUserData ? 'UnFollow' : 'Follow'}</button>
     </StyledUserHeader>
   )
 }

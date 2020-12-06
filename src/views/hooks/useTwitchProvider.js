@@ -9,7 +9,7 @@ const TwitchContext = React.createContext({})
 
 const TwitchProvider = ({ userId, isLoggedIn, children }) => {
   // work on pulling deleteUser and create user out of this hook. That way this should trigger a re-render🤞
-  const { isUsersLoading, userFollowsData } = useLoadUserFollows({ userId, isLoggedIn })
+  const { isUsersLoading, userFollowsData, handleDeleteFollow } = useLoadUserFollows({ userId, isLoggedIn })
   const { isStreamsLoading, streamsData } = useStreams({ userFollowsData, isUsersLoading, isLoggedIn })
   const { isGetUserDataLoading, userData } = useUserData({ userFollowsData, isUsersLoading, isLoggedIn })
   const { isGamesLoading, gameData } = useGames({ streamsData, isStreamsLoading, isLoggedIn })
@@ -41,15 +41,17 @@ const TwitchProvider = ({ userId, isLoggedIn, children }) => {
   const liveStreams = userStreamingData.filter((channel) => channel?.type === 'live')
   const offlineStreams = userStreamingData.filter((channel) => channel?.type !== 'live')
 
-  const values = { isLoading, userStreamingData, liveStreams, offlineStreams, userFollowsData }
+  const values = { isLoading, userStreamingData, liveStreams, offlineStreams, userFollowsData, handleDeleteFollow }
 
   return <TwitchContext.Provider value={values}>{children({ isLoading: isLoading })}</TwitchContext.Provider>
 }
 
 const useTwitch = () => {
-  const { userStreamingData, liveStreams, offlineStreams, userFollowsData, isLoading } = useContext(TwitchContext)
+  const { userStreamingData, liveStreams, offlineStreams, userFollowsData, handleDeleteFollow, isLoading } = useContext(
+    TwitchContext
+  )
 
-  return { userStreamingData, liveStreams, offlineStreams, userFollowsData, isLoading }
+  return { userStreamingData, liveStreams, offlineStreams, userFollowsData, handleDeleteFollow, isLoading }
 }
 
 export { TwitchProvider, useTwitch }
