@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { T_TKN } from '../../consts'
 import { getApi } from '../../fetchUtil'
 import { buildFollowsUrl } from '../../utils'
-import { deleteFollow } from '../../api/userFollows'
+import { deleteFollow, createFollow } from '../../api/userFollows'
 const useLoadUserFollows = ({ userId, first = 100, isLoggedIn }) => {
   const [userFollowsData, setUserFollowsData] = useState([])
   const [isUsersLoading, setIsUsersLoading] = useState(true)
@@ -37,10 +37,20 @@ const useLoadUserFollows = ({ userId, first = 100, isLoggedIn }) => {
   )
 
   const handleDeleteFollow = ({ toId }) => {
-    console.log('toId', toId, 'fromId', userId)
     deleteFollow({ toId, fromId: userId })
       .then(() => {
-        console.log('here')
+        setUserFollowsData([])
+        loadUserFollows({})
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  const handleCreateFollow = ({ toId }) => {
+    createFollow({ toId, fromId: userId })
+      .then(() => {
+        setUserFollowsData([])
         loadUserFollows({})
       })
       .catch((error) => {
@@ -63,6 +73,7 @@ const useLoadUserFollows = ({ userId, first = 100, isLoggedIn }) => {
   return {
     userFollowsData,
     handleDeleteFollow,
+    handleCreateFollow,
     isUsersLoading,
   }
 }

@@ -51,10 +51,20 @@ const Live = styled.span`
 `
 
 const Result = ({ userData, gameData, followingUserData }) => {
-  const { is_live, description, title, display_name, profile_image_url } = userData
+  const { id, is_live, description, title, display_name, profile_image_url } = userData
   const { to_id } = followingUserData ?? {}
 
-  const { handleDeleteFollow } = useTwitch()
+  const { handleDeleteFollow, handleCreateFollow } = useTwitch()
+
+  const FollowUnfollowButton = () => {
+    return (
+      <button
+        onClick={() => (followingUserData ? handleDeleteFollow({ toId: to_id }) : handleCreateFollow({ toId: id }))}
+      >
+        {followingUserData ? 'UnFollow' : 'Follow'}
+      </button>
+    )
+  }
 
   return (
     <StyledUserHeader>
@@ -75,7 +85,7 @@ const Result = ({ userData, gameData, followingUserData }) => {
           <ChannelDescription>{description}</ChannelDescription>
         )}
       </StyledChannelInfo>
-      <button onClick={() => handleDeleteFollow({ toId: to_id })}>{followingUserData ? 'UnFollow' : 'Follow'}</button>
+      <FollowUnfollowButton />
     </StyledUserHeader>
   )
 }

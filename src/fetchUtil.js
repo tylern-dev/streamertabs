@@ -1,8 +1,9 @@
 import { TWITCH_CLIENT_ID } from './consts'
 
 function status(response) {
-  console.log('status response', response)
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status === 204) {
+    return Promise.resolve()
+  } else if (response.status >= 200 && response.status < 300) {
     return Promise.resolve(response)
   } else {
     return Promise.reject(new Error(response.statusText))
@@ -10,8 +11,7 @@ function status(response) {
 }
 
 function json(response) {
-  console.log('json response', response)
-  return response.json()
+  return response ? response.json() : {}
 }
 
 export const getApi = ({ url = '', accessToken, queryParams = {}, method = '', isOauth }) => {
