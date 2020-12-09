@@ -5,7 +5,6 @@ import { TWITCH_TV } from '../../consts'
 import { useFavorites } from '../hooks/useFavoritesProvider'
 import { HiUserGroup } from 'react-icons/hi'
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs'
-// import { FaEllipsisV } from 'react-icons/fa'
 import DropdownMenu from '../../components/dropdown-menu'
 import { useTwitch } from '../hooks/useTwitchProvider'
 

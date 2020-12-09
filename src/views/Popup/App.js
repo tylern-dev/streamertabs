@@ -24,12 +24,13 @@ const Header = styled.header`
   grid-template-areas:
     'left right'
     'search search';
-  background-color: #1b1b33;
+  background-color: rgb(27, 27, 51, 0.8);
   position: sticky;
   top: 0;
   padding: 9px 0;
   align-items: center;
-
+  backdrop-filter: blur(10px);
+  z-index: 1;
   & > ${Input} {
     grid-area: search;
     justify-self: center;

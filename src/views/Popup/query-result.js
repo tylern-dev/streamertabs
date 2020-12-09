@@ -19,12 +19,25 @@ const ResultSection = styled.div`
   display: grid;
   gap: 24px;
 `
+
+const StyledShowMoreButton = styled.button`
+  justify-self: start;
+  border: 0;
+  background: none;
+  color: #6d72d6;
+  font-size: 1.3em;
+  padding: 16px;
+  cursor: pointer;
+  font-weight: 600;
+
+  :hover {
+    text-decoration: underline;
+  }
+`
+
 const QueryResult = () => {
   const { queryResult, gameData, handleShowMoreResults, searchedTerm, isLoading } = useSearch()
-  console.log(queryResult)
   const { userFollowsData } = useTwitch()
-  // console.log('queryResult', queryResult)
-  // console.log('userFollowsData', userFollowsData)
 
   const buildGameData = (userData) => gameData?.find((gd) => gd?.id === userData?.game_id)
   const getFollowingUserData = (userData) => userFollowsData?.find((ufd) => ufd.to_id === userData?.id)
@@ -46,7 +59,7 @@ const QueryResult = () => {
           />
         ))}
       </ResultSection>
-      <button onClick={() => handleShowMoreResults()}>show more</button>
+      <StyledShowMoreButton onClick={() => handleShowMoreResults()}>show more</StyledShowMoreButton>
     </ResultsSectionContainer>
   )
 }

@@ -1,18 +1,15 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Link, useLocation } from 'react-router-dom'
-import { HiOutlineHome, HiHome, HiOutlineStar, HiStar, HiSearch, HiOutlineSearch } from 'react-icons/hi'
+import { HiOutlineHome, HiHome, HiSearch, HiOutlineSearch } from 'react-icons/hi'
 import { RiCameraLine, RiCameraOffLine, RiCameraOffFill, RiCameraFill, RiLogoutCircleRLine } from 'react-icons/ri'
 import { useSearch } from '../hooks/useSearchProvider'
+import { BsBookmark, BsBookmarkFill } from 'react-icons/bs'
 
 const StyledNav = styled.nav`
   position: sticky;
-  /* display: grid; */
-  /* grid-template-columns: 1fr; */
-  /* align-content: start; */
-  /* gap: 4px; */
-  height: 508px;
-  top: 92px;
+  height: 502px;
+  top: 98px;
 `
 
 const StyledMenuButton = styled.button`
@@ -75,7 +72,7 @@ const Menu = ({ handleLogout }) => {
         </Link>
         <Link to="/favorites">
           <StyledMenuButton title="Favorites">
-            {pathname === '/favorites' ? <HiStar /> : <HiOutlineStar />}
+            {pathname === '/favorites' ? <BsBookmarkFill /> : <BsBookmark />}
           </StyledMenuButton>
         </Link>
         <Link to="/live">
