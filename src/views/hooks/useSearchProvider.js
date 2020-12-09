@@ -10,7 +10,7 @@ const SearchProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false)
   // const [shouldShowQueryResults, setShouldShowQueryResults] = useState(false)
   const [searchedTerm, setSearchedTerm] = useState('')
-  const [queryResult, setQueryResult] = useState([])
+  const [queryResult, setQueryResult] = useState()
   const [paginationCursor, setPaginationCursor] = useState('')
   const [gameData, setGameData] = useState([])
 

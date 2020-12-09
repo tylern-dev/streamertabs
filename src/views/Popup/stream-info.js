@@ -3,9 +3,14 @@ import styled from 'styled-components'
 import LazyLoad from 'react-lazyload'
 import { TWITCH_TV } from '../../consts'
 import { useFavorites } from '../hooks/useFavoritesProvider'
-import { HiStar, HiOutlineStar, HiUserGroup } from 'react-icons/hi'
+import { HiUserGroup } from 'react-icons/hi'
+import { BsBookmark, BsBookmarkFill } from 'react-icons/bs'
+import DropdownMenu from '../../components/dropdown-menu'
+import { useTwitch } from '../hooks/useTwitchProvider'
 
 const StyledProfileImage = styled.img``
+
+const MetaButtonContainer = styled.div``
 
 const StyledUserName = styled.a`
   text-decoration: none;
@@ -40,23 +45,24 @@ const StyledMeta = styled.div`
     }
   }
 `
-const StyledFavoriteBtn = styled.button`
+const StyledMetaButton = styled.button`
   background: none;
   outline: none;
   border: none;
+  padding: 0;
 `
 
 const StyledStreamHeader = styled.div`
   display: grid;
-  grid-template-columns: auto auto 1fr;
+  grid-template-columns: auto 1fr auto;
   gap: 8px;
   ${StyledProfileImage} {
     max-width: 30px;
     border-radius: 16px;
   }
-  ${StyledFavoriteBtn} {
+  ${DropdownMenu},${StyledMetaButton} {
     place-self: start end;
-    font-size: 2em;
+    font-size: 1.5em;
     color: #6d72d6;
 
     :hover {
@@ -79,7 +85,7 @@ const StyledListItem = styled.li`
   display: grid;
   gap: 16px;
   background-color: #26284a;
-  padding: 8px 16px;
+  padding: 8px;
 `
 
 const StyledImgLink = styled.a`
@@ -88,6 +94,7 @@ const StyledImgLink = styled.a`
 
 const StreamInfo = ({ streamData }) => {
   const { favoriteStreams, setFavorites, removeFavorite } = useFavorites()
+  const { handleDeleteFollow } = useTwitch()
 
   const handleFavorite = (id) => {
     setFavorites(id)
@@ -97,58 +104,68 @@ const StreamInfo = ({ streamData }) => {
     removeFavorite(id)
   }
 
+  const handleUnfollow = (id) => {
+    console.log('UNFOLLOW THIS USER', id)
+    handleDeleteFollow({ toId: id })
+  }
+
   return (
     <StyledUl>
-      {streamData &&
-        streamData.map(
-          ({ display_name, viewer_count, title, thumbnail_url, type, id, name, box_art_url, profile_image_url }) => {
-            box_art_url = box_art_url?.replace('-{width}x{height}', '')
-            thumbnail_url = thumbnail_url?.replace('-{width}x{height}', '')
-            const favorited = favoriteStreams.includes(id)
-            return (
-              <LazyLoad height="100%" offset={100} key={id} once>
-                <StyledListItem>
-                  <StyledStreamHeader>
-                    <StyledImgLink
+      {streamData?.map(
+        ({ display_name, viewer_count, title, thumbnail_url, type, id, name, box_art_url, profile_image_url }) => {
+          box_art_url = box_art_url?.replace('-{width}x{height}', '')
+          thumbnail_url = thumbnail_url?.replace('-{width}x{height}', '')
+          const favorited = favoriteStreams.includes(id)
+          return (
+            <LazyLoad height="100%" offset={100} key={id} once>
+              <StyledListItem>
+                <StyledStreamHeader>
+                  <StyledImgLink
+                    href={`${TWITCH_TV}${display_name?.toLowerCase()}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <StyledProfileImage src={profile_image_url} />
+                  </StyledImgLink>
+                  <div>
+                    <StyledUserName
                       href={`${TWITCH_TV}${display_name?.toLowerCase()}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <StyledProfileImage src={profile_image_url} />
-                    </StyledImgLink>
-                    <div>
-                      <StyledUserName
-                        href={`${TWITCH_TV}${display_name?.toLowerCase()}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {display_name}
-                      </StyledUserName>
-                      {type && (
-                        <StyledMeta>
-                          <StyledGameLink
-                            href={`${TWITCH_TV}directory/game/${name}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {name}
-                          </StyledGameLink>
-                          <StyledStreamTitle>{title}</StyledStreamTitle>
-                        </StyledMeta>
-                      )}
-                    </div>
-                    <StyledFavoriteBtn
+                      {display_name}
+                    </StyledUserName>
+                    {type && (
+                      <StyledMeta>
+                        <StyledGameLink
+                          href={`${TWITCH_TV}directory/game/${name}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {name}
+                        </StyledGameLink>
+                        <StyledStreamTitle>{title}</StyledStreamTitle>
+                      </StyledMeta>
+                    )}
+                  </div>
+                  <MetaButtonContainer>
+                    <StyledMetaButton
                       title={favorited ? 'Unfavorite' : 'Favorite'}
                       onClick={() => (favorited ? handleRemoveFavorite(id) : handleFavorite(id))}
                     >
-                      {favorited ? <HiStar /> : <HiOutlineStar />}
-                    </StyledFavoriteBtn>
-                  </StyledStreamHeader>
-                </StyledListItem>
-              </LazyLoad>
-            )
-          }
-        )}
+                      {favorited ? <BsBookmarkFill /> : <BsBookmark />}
+                    </StyledMetaButton>
+                    <DropdownMenu
+                      menuItems={[{ text: 'Unfollow', handleOnClick: () => handleUnfollow(id) }]}
+                      menuId={id}
+                    />
+                  </MetaButtonContainer>
+                </StyledStreamHeader>
+              </StyledListItem>
+            </LazyLoad>
+          )
+        }
+      )}
     </StyledUl>
   )
 }
