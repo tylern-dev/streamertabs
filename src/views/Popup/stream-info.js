@@ -6,7 +6,8 @@ import { useFavorites } from '../hooks/useFavoritesProvider'
 import { HiUserGroup } from 'react-icons/hi'
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs'
 // import { FaEllipsisV } from 'react-icons/fa'
-import DropdownMenu from '../../components/overflow-menu'
+import DropdownMenu from '../../components/dropdown-menu'
+import { useTwitch } from '../hooks/useTwitchProvider'
 
 const StyledProfileImage = styled.img``
 
@@ -49,6 +50,7 @@ const StyledMetaButton = styled.button`
   background: none;
   outline: none;
   border: none;
+  padding: 0;
 `
 
 const StyledStreamHeader = styled.div`
@@ -93,6 +95,7 @@ const StyledImgLink = styled.a`
 
 const StreamInfo = ({ streamData }) => {
   const { favoriteStreams, setFavorites, removeFavorite } = useFavorites()
+  const { handleDeleteFollow } = useTwitch()
 
   const handleFavorite = (id) => {
     setFavorites(id)
@@ -104,6 +107,7 @@ const StreamInfo = ({ streamData }) => {
 
   const handleUnfollow = (id) => {
     console.log('UNFOLLOW THIS USER', id)
+    handleDeleteFollow({ toId: id })
   }
 
   return (

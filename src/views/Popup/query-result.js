@@ -21,6 +21,7 @@ const ResultSection = styled.div`
 `
 const QueryResult = () => {
   const { queryResult, gameData, handleShowMoreResults, searchedTerm, isLoading } = useSearch()
+  console.log(queryResult)
   const { userFollowsData } = useTwitch()
   // console.log('queryResult', queryResult)
   // console.log('userFollowsData', userFollowsData)
@@ -29,6 +30,8 @@ const QueryResult = () => {
   const getFollowingUserData = (userData) => userFollowsData?.find((ufd) => ufd.to_id === userData?.id)
 
   if (isLoading) return <Loading />
+
+  if (!queryResult) return null
   return (
     <ResultsSectionContainer>
       <StyledHeader>Results for {`"${searchedTerm}"`}</StyledHeader>

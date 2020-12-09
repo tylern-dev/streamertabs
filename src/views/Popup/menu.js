@@ -55,6 +55,7 @@ const Menu = ({ handleLogout }) => {
 
   useEffect(() => {
     if (pathname !== '/search' && searchedTerm) {
+      console.log('here in clear search')
       handleClearSearch()
     }
   }, [handleClearSearch, pathname, searchedTerm])

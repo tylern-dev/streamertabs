@@ -2,12 +2,21 @@ import React, { useRef } from 'react'
 import styled from 'styled-components'
 import { FaEllipsisV } from 'react-icons/fa'
 import { useDetectOutsideClick } from '../views/hooks/useDetectOutsideClick'
+
 const StyledMetaButton = styled.button`
+  color: #6d72d6;
   background: none;
   outline: none;
   border: none;
-  font-size: 2em;
+  font-size: 1.4em;
+  padding: 8px 16px;
+  cursor: pointer;
+
+  :hover {
+    text-decoration: underline;
+  }
 `
+
 const StyledEllipseButton = styled.button`
   background: none;
   outline: none;
@@ -15,17 +24,14 @@ const StyledEllipseButton = styled.button`
 `
 
 const MenuItemContainer = styled.div`
-  background: #ffffff;
-  border-radius: 8px;
+  display: grid;
+  gap: 4px;
   position: absolute;
-  top: 60px;
-  right: 0;
-  /* width: 100%; */
+  background: #1b1b33;
+  border: 1px solid #6d72d6;
+  top: 25px;
+  right: 10px;
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
-  /* opacity: 0; */
-  /* visibility: hidden; */
-  transform: translateY(-20px);
-  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
 `
 
 const DropdownMenuContainer = styled.div`
