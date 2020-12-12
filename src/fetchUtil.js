@@ -14,13 +14,14 @@ function json(response) {
   return response ? response.json() : {}
 }
 
-export const getApi = ({ url = '', accessToken, queryParams = {}, method = '', isOauth }) => {
+export const getApi = ({ url = '', accessToken, queryParams = {}, method = '', isOauth, headers }) => {
   return new Promise((resolve, reject) => {
     fetch(url, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Client-Id': `${TWITCH_CLIENT_ID}`,
+        ...headers,
       },
     })
       .then(status)
@@ -32,14 +33,16 @@ export const getApi = ({ url = '', accessToken, queryParams = {}, method = '', i
   })
 }
 
-export const postApi = ({ url = '', method = 'post', accessToken, isOauth }) => {
+export const postApi = ({ url = '', method = 'post', accessToken, isOauth, headers, body }) => {
   return new Promise((resolve, reject) => {
     fetch(url, {
       method: method,
       headers: {
         Authorization: `${isOauth ? 'OAuth ' : 'Bearer '}${accessToken}`,
         'Client-Id': `${TWITCH_CLIENT_ID}`,
+        ...headers,
       },
+      body: body,
     })
       .then(status)
       .then(json)

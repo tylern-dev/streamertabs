@@ -23,6 +23,7 @@ const useLogin = () => {
               displayName: display_name,
               profileImageUrl: profile_image_url,
             })
+            chrome.storage.local.set({ userId: id })
             setIsLoggedIn(true)
           })
         } else setIsLoggedIn(false)
@@ -77,6 +78,7 @@ const useLogin = () => {
             setIsLoggedIn(false)
             setUserData({})
             chrome.storage.local.set({ [T_TKN]: '' })
+            chrome.storage.local.set({ userId: '' })
           }
         })
       }

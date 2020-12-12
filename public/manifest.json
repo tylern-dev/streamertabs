@@ -6,10 +6,13 @@
   "permissions": [
     "identity",
     "storage",
+    "notifications",
+    "alarms",
     "https://id.twitch.tv/*"
   ],
   "background": {
-    "scripts": ["static/js/background.js"]
+    "scripts": ["static/js/background.js"],
+    "persistent": false
   },
   "content_scripts": [{
     "js": [ "static/js/content.js" ],

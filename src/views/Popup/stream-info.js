@@ -105,7 +105,6 @@ const StreamInfo = ({ streamData }) => {
   }
 
   const handleUnfollow = (id) => {
-    console.log('UNFOLLOW THIS USER', id)
     handleDeleteFollow({ toId: id })
   }
 

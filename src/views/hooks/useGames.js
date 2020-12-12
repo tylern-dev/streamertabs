@@ -10,7 +10,7 @@ const useGames = ({ streamsData, isStreamsLoading, isLoggedIn }) => {
   const getGames = useCallback(() => {
     const gameIds = streamsData?.map((game) => game.game_id)
     const uniqueGameIds = [...new Set(gameIds)] // removes duplicate game IDs
-    const chunkedArray = chunkArray(uniqueGameIds, 75)
+    const chunkedArray = chunkArray(uniqueGameIds, 100)
     chunkedArray.forEach((chunk) => {
       setIsGamesLoading(true)
       chrome.storage.local.get([T_TKN], (response) => {

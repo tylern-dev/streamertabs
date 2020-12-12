@@ -9,7 +9,7 @@ const useUserData = ({ userFollowsData = [], isUsersLoading = false, isLoggedIn 
 
   const getUserData = useCallback(() => {
     const userIds = userFollowsData?.map((ud) => ud.to_id)
-    const chunkedArray = chunkArray(userIds, 75)
+    const chunkedArray = chunkArray(userIds, 100)
     chunkedArray.forEach((chunk) => {
       setIsGetUserDataLoading(true)
       chrome.storage.local.get([T_TKN], (response) => {
