@@ -20,7 +20,7 @@ export const buildTwitchUsersUrl = ({ user_id, user_logins }) => {
   return `${TWITCH_USERS_URL}?${user_id ? `id=${user_id}` : ''}${user_logins ? `login=${user_logins}` : ''}`
 }
 
-export const buildFollowsUrl = ({ after, to_id, from_id, first = 10 }) => {
+export const buildFollowsUrl = ({ after, to_id, from_id, first = 5 }) => {
   return `${TWITCH_USERS_FOLLOWS}?from_id=${from_id}${to_id ? `&to_id=${to_id}` : ''}${after ? `&after=${after}` : ''}${
     first ? `&first=${first}` : ''
   }`
