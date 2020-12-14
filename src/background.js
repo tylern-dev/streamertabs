@@ -1,45 +1,25 @@
-// import { getStreams } from './api/streams'
+import { getStreams } from './api/streams'
 import { getFollows } from './api/userFollows'
 ;(function () {
-  // const streamOnlineCount = 0
-  // let userFollowsIds = []
   chrome.alarms.create('main-alarm', { delayInMinutes: 1, periodInMinutes: 1 })
-
-  chrome.alarms.onAlarm.addListener((alarm) => {
-    console.log('alarm', alarm)
-
-    // chrome.storage.local.get(['userId'], (result) => {
-    //   if (result.userId && alarm.name === 'no-user-id') {
-    //     getFollowsFromApi({ userId: result.userId })
-    //     chrome.alarms.clear('no-user-id')
-    //   } else if (!result.userId && !alarm.name === 'no-user-id') {
-    //     chrome.alarms.create('no-user-id', { delayInMinutes: 1, periodInMinutes: 1 })
-    //   }
-    // })
-
+  chrome.alarms.onAlarm.addListener(() => {
     chrome.storage.local.get(['userId'], (result) => {
       if (result?.userId) {
-        // if (userFollowsIds.length) userFollowsIds = []
-
-        getFollowsFromApi({ userId: result.userId }).then((userIds) => console.log('userIDS!! ---> ', userIds))
+        getFollowsFromApi({ userId: result.userId })
       }
     })
   })
 
-  // export const getLiveStreamsCountToSetBadge = (count) => {
-  //   chrome.browserAction.setBadgeText({ text: toString(count) })
-  // }
+  chrome.runtime.onUpdateAvailable.addListener(() => {
+    chrome.runtime.reload()
+  })
 
   chrome.runtime.onStartup.addListener(() => {
     chrome.storage.local.get(['userId'], (result) => {
-      if (result.userId) {
+      if (result?.userId) {
         getFollowsFromApi({ userId: result.userId })
       }
-      // else {
-      //   chrome.alarms.create('no-user-id', { delayInMinutes: 1, periodInMinutes: 1 })
-      // }
     })
-
     // fetch followed channels
     // fetch streams
     // display count of live streams on badge
@@ -47,28 +27,36 @@ import { getFollows } from './api/userFollows'
   })
 
   function getFollowsFromApi({ userId, after, prevUserIds = [] }) {
-    return new Promise((resolve, reject) => {
-      const userFollowsIds = [...prevUserIds]
-      getFollows({ fromId: userId, after })
-        .then(({ data, pagination }) => {
-          const dataUserIds = data.map((d) => d.to_id)
-
-          userFollowsIds.push([...dataUserIds])
-          if (pagination?.cursor) {
-            getFollowsFromApi({ userId, after: pagination?.cursor, prevUserIds: userFollowsIds })
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          reject(error)
-        })
-
-      resolve(userFollowsIds)
-    })
+    getFollows({ fromId: userId, after })
+      .then(({ data, pagination }) => {
+        const userFollowsIds = [...prevUserIds]
+        const dataUserIds = data.map((d) => d.to_id)
+        userFollowsIds.push([...dataUserIds])
+        if (pagination?.cursor) {
+          getFollowsFromApi({ userId, after: pagination?.cursor, prevUserIds: userFollowsIds })
+        } else {
+          getStreamsFromApi({ userIds: userFollowsIds }).then((streams) => {
+            const streamsFlatten = streams.flat()
+            console.log('Streams flatten and count after startup ', streamsFlatten, toString(streamsFlatten.length))
+            setLiveStreamsCountToSetBadge(streamsFlatten.length.toString())
+          })
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
-  // function getStreamsFromApi({}) {}
-})()
+  function getStreamsFromApi({ userIds }) {
+    const requests = userIds.map((userIdBatch) => {
+      return getStreams({ userIds: userIdBatch })
+        .then(({ data }) => data)
+        .catch((error) => console.log(error))
+    })
+    return Promise.all(requests)
+  }
 
-// in the alarm, poll the live streams and compare result against the previous live streams array. If there is a difference, then the difference is
-// the stream that went. Override previous array with new array.
+  function setLiveStreamsCountToSetBadge(count) {
+    chrome.browserAction.setBadgeText({ text: count })
+  }
+})()
