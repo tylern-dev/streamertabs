@@ -2,16 +2,17 @@ import { getStreams } from './api/streams'
 import { getFollows } from './api/userFollows'
 ;(function () {
   chrome.alarms.create('main-alarm', { delayInMinutes: 1, periodInMinutes: 1 })
+
+  chrome.runtime.onUpdateAvailable.addListener(() => {
+    chrome.runtime.reload()
+  })
+
   chrome.alarms.onAlarm.addListener(() => {
     chrome.storage.local.get(['userId'], (result) => {
       if (result?.userId) {
         getFollowsFromApi({ userId: result.userId })
       }
     })
-  })
-
-  chrome.runtime.onUpdateAvailable.addListener(() => {
-    chrome.runtime.reload()
   })
 
   chrome.runtime.onStartup.addListener(() => {
@@ -36,9 +37,30 @@ import { getFollows } from './api/userFollows'
           getFollowsFromApi({ userId, after: pagination?.cursor, prevUserIds: userFollowsIds })
         } else {
           getStreamsFromApi({ userIds: userFollowsIds }).then((streams) => {
-            const streamsFlatten = streams.flat()
-            console.log('Streams flatten and count after startup ', streamsFlatten, toString(streamsFlatten.length))
-            setLiveStreamsCountToSetBadge(streamsFlatten.length.toString())
+            const streamsFlattened = streams.flat()
+            chrome.storage.local.get(['prevLiveStreams'], (res) => {
+              if (res?.prevLiveStreams) {
+                // compare the new live streams to the old one.
+                const newLiveStreams = streamsFlattened.filter(
+                  (newLiveStream) =>
+                    !res.prevLiveStreams.some((prevStream) => prevStream.user_id === newLiveStream.user_id)
+                )
+                console.log('new LiveStream that just went live', newLiveStreams)
+                console.log('streamsFlattened', streamsFlattened)
+                if (newLiveStreams.length > 0) {
+                  newLiveStreams.forEach((stream) =>
+                    chrome.notifications.create({
+                      title: 'Twitch Tabs',
+                      message: `${stream.user_name} went live!`,
+                      type: 'basic',
+                      iconUrl: 'logo192.png',
+                    })
+                  )
+                }
+              }
+            })
+            setLiveStreamsCountToSetBadge(streamsFlattened.length.toString())
+            setLiveStreamIdsLocalStorage(streamsFlattened)
           })
         }
       })
@@ -58,5 +80,10 @@ import { getFollows } from './api/userFollows'
 
   function setLiveStreamsCountToSetBadge(count) {
     chrome.browserAction.setBadgeText({ text: count })
+  }
+
+  function setLiveStreamIdsLocalStorage(streams) {
+    const mappedStreamerIds = streams.map((stream) => stream)
+    chrome.storage.local.set({ prevLiveStreams: mappedStreamerIds })
   }
 })()

@@ -79,6 +79,8 @@ const useLogin = () => {
             setUserData({})
             chrome.storage.local.set({ [T_TKN]: '' })
             chrome.storage.local.set({ userId: '' })
+            chrome.browserAction.setBadgeText({ text: '' })
+            chrome.storage.local.set({ prevLiveStreams: [] })
           }
         })
       }
