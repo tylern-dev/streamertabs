@@ -21,10 +21,6 @@ import { getFollows } from './api/userFollows'
         getFollowsFromApi({ userId: result.userId })
       }
     })
-    // fetch followed channels
-    // fetch streams
-    // display count of live streams on badge
-    // store the live streams in an array.
   })
 
   function getFollowsFromApi({ userId, after, prevUserIds = [] }) {
@@ -45,8 +41,6 @@ import { getFollows } from './api/userFollows'
                   (newLiveStream) =>
                     !res.prevLiveStreams.some((prevStream) => prevStream.user_id === newLiveStream.user_id)
                 )
-                console.log('new LiveStream that just went live', newLiveStreams)
-                console.log('streamsFlattened', streamsFlattened)
                 if (newLiveStreams.length > 0) {
                   newLiveStreams.forEach((stream) =>
                     chrome.notifications.create({
