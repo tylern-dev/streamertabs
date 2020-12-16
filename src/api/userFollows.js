@@ -2,11 +2,11 @@ import { getApi, postApi } from '../fetchUtil'
 import { T_TKN } from '../consts'
 import { buildFollowsUrl } from '../utils'
 
-export const getFollows = ({ fromId }) => {
+export const getFollows = ({ fromId, after }) => {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get([T_TKN], (tokenData) => {
       getApi({
-        url: buildFollowsUrl({ from_id: fromId }),
+        url: buildFollowsUrl({ from_id: fromId, after }),
         accessToken: tokenData[T_TKN],
       })
         .then((data) => resolve(data))

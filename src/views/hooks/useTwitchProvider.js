@@ -8,7 +8,6 @@ import { reconstructUsersObj } from '../../utils'
 const TwitchContext = React.createContext({})
 
 const TwitchProvider = ({ userId, isLoggedIn, children }) => {
-  // work on pulling deleteUser and create user out of this hook. That way this should trigger a re-render🤞
   const { isUsersLoading, userFollowsData, handleDeleteFollow, handleCreateFollow } = useLoadUserFollows({
     userId,
     isLoggedIn,

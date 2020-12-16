@@ -10,7 +10,7 @@ const useStreams = ({ userFollowsData, isUsersLoading, isLoggedIn }) => {
   const loadUsersWithStreams = useCallback(() => {
     const followedUserIds = (userFollowsData && userFollowsData?.map(({ to_id }) => to_id)) || []
 
-    const chunkedArray = chunkArray(followedUserIds, 75)
+    const chunkedArray = chunkArray(followedUserIds, 100)
     chunkedArray.forEach((chunk) => {
       setIsStreamsLoading(true)
       chrome.storage.local.get([T_TKN], (response) => {

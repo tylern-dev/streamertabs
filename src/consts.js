@@ -1,4 +1,5 @@
 export const T_TKN = 't_tkn'
+export const USER_FOLLOWS_IDS = 'user_follows_ids'
 export const TWITCH_TV = 'https://twitch.tv/'
 export const TWITCH_USERS_URL = 'https://api.twitch.tv/helix/users'
 export const TWITCH_VALIDATE_URL = 'https://id.twitch.tv/oauth2/validate'
@@ -12,3 +13,4 @@ export const TWITCH_USERS_FOLLOWS = `https://api.twitch.tv/helix/users/follows`
 export const TWITCH_GET_STREAMS = 'https://api.twitch.tv/helix/streams'
 export const TWITCH_QUERY_CHANNELS = 'https://api.twitch.tv/helix/search/channels'
 export const TWITCH_GAMES = 'https://api.twitch.tv/helix/games'
+export const TWITCH_SUBSCRIPTIONS = 'https://api.twitch.tv/helix/eventsub/subscriptions'

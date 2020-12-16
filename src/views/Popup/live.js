@@ -5,7 +5,7 @@ import StreamSection from '../../components/stream-section'
 
 const Live = () => {
   const { liveStreams } = useTwitch()
-
+  chrome.browserAction.setBadgeText({ text: liveStreams.length.toString() })
   return (
     <>
       <StreamSection section="Live" count={liveStreams.length}>
