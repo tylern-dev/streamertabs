@@ -45,7 +45,7 @@ import { getFollows } from './api/userFollows'
                   newLiveStreams.forEach((stream) =>
                     chrome.notifications.create({
                       title: 'Twitch Tabs',
-                      message: `${stream.user_name} went live!`,
+                      message: `${stream.user_name} is live!`,
                       type: 'basic',
                       iconUrl: 'logo192.png',
                     })

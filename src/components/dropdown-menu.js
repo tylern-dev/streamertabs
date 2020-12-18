@@ -37,9 +37,10 @@ const MenuItemContainer = styled.div`
 const DropdownMenuContainer = styled.div`
   position: relative;
   display: inline-block;
+  z-index: 1;
 `
 
-const DropdownMenu = ({ menuItems, loading, className }) => {
+const DropdownMenu = ({ menuItems, loading, className, children }) => {
   const dropdownRef = useRef(null)
   const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false)
 
@@ -59,6 +60,7 @@ const DropdownMenu = ({ menuItems, loading, className }) => {
               {btn.text}
             </StyledMetaButton>
           ))}
+          {children}
         </MenuItemContainer>
       )}
     </DropdownMenuContainer>

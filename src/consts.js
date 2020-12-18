@@ -1,4 +1,5 @@
 export const T_TKN = 't_tkn'
+export const NOTIFICATIONS = 'notifications'
 export const USER_FOLLOWS_IDS = 'user_follows_ids'
 export const TWITCH_TV = 'https://twitch.tv/'
 export const TWITCH_USERS_URL = 'https://api.twitch.tv/helix/users'

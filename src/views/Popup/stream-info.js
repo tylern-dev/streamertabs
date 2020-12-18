@@ -3,10 +3,12 @@ import styled from 'styled-components'
 import LazyLoad from 'react-lazyload'
 import { TWITCH_TV } from '../../consts'
 import { useFavorites } from '../hooks/useFavoritesProvider'
+import { useNotification } from '../hooks/useNotificationsProvider'
 import { HiUserGroup } from 'react-icons/hi'
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs'
 import DropdownMenu from '../../components/dropdown-menu'
 import { useTwitch } from '../hooks/useTwitchProvider'
+import Toggle from '../../components/toggle'
 
 const StyledProfileImage = styled.img``
 
@@ -95,6 +97,8 @@ const StyledImgLink = styled.a`
 const StreamInfo = ({ streamData }) => {
   const { favoriteStreams, setFavorites, removeFavorite } = useFavorites()
   const { handleDeleteFollow } = useTwitch()
+  const { stoppedNotifications, startNotification, stopNotification } = useNotification()
+  console.log('stoppedNotifications', stoppedNotifications)
 
   const handleFavorite = (id) => {
     setFavorites(id)
@@ -108,6 +112,17 @@ const StreamInfo = ({ streamData }) => {
     handleDeleteFollow({ toId: id })
   }
 
+  const handleNotificationToggle = (id) => {
+    if (stoppedNotifications.includes(id)) {
+      startNotification(id)
+    } else {
+      stopNotification(id)
+    }
+  }
+
+  const isNotificationOn = (id) => {
+    return !stoppedNotifications.includes(id)
+  }
   return (
     <StyledUl>
       {streamData?.map(
@@ -157,7 +172,15 @@ const StreamInfo = ({ streamData }) => {
                     <DropdownMenu
                       menuItems={[{ text: 'Unfollow', handleOnClick: () => handleUnfollow(id) }]}
                       menuId={id}
-                    />
+                    >
+                      <Toggle
+                        id={id}
+                        value={isNotificationOn(id)}
+                        onToggle={() => {
+                          handleNotificationToggle(id)
+                        }}
+                      />
+                    </DropdownMenu>
                   </MetaButtonContainer>
                 </StyledStreamHeader>
               </StyledListItem>
