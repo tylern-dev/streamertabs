@@ -1,7 +1,15 @@
+import { NOTIFICATIONS, TWITCH_TV } from './consts'
 import { getStreams } from './api/streams'
 import { getFollows } from './api/userFollows'
 ;(function () {
+  const stoppedNotifications = []
+  const linkMap = {}
+
   chrome.alarms.create('main-alarm', { delayInMinutes: 1, periodInMinutes: 1 })
+
+  chrome.notifications.onClicked.addListener((notifId) => {
+    chrome.tabs.create({ url: `${TWITCH_TV}${linkMap[notifId]}` })
+  })
 
   chrome.runtime.onUpdateAvailable.addListener(() => {
     chrome.runtime.reload()
@@ -16,6 +24,7 @@ import { getFollows } from './api/userFollows'
   })
 
   chrome.runtime.onStartup.addListener(() => {
+    getStoppedNotifications()
     chrome.storage.local.get(['userId'], (result) => {
       if (result?.userId) {
         getFollowsFromApi({ userId: result.userId })
@@ -34,6 +43,7 @@ import { getFollows } from './api/userFollows'
         } else {
           getStreamsFromApi({ userIds: userFollowsIds }).then((streams) => {
             const streamsFlattened = streams.flat()
+            console.log(streamsFlattened)
             chrome.storage.local.get(['prevLiveStreams'], (res) => {
               if (res?.prevLiveStreams) {
                 // compare the new live streams to the old one.
@@ -42,14 +52,22 @@ import { getFollows } from './api/userFollows'
                     !res.prevLiveStreams.some((prevStream) => prevStream.user_id === newLiveStream.user_id)
                 )
                 if (newLiveStreams.length > 0) {
-                  newLiveStreams.forEach((stream) =>
-                    chrome.notifications.create({
-                      title: 'Twitch Tabs',
-                      message: `${stream.user_name} is live!`,
-                      type: 'basic',
-                      iconUrl: 'logo192.png',
-                    })
-                  )
+                  newLiveStreams.forEach((stream) => {
+                    // if the id is in stoppedNotifications, don't create notification
+                    if (!stoppedNotifications.includes(stream.user_id)) {
+                      chrome.notifications.create(
+                        {
+                          title: 'Twitch Tabs',
+                          message: `${stream.user_name} is live!`,
+                          type: 'basic',
+                          iconUrl: 'logo192.png',
+                        },
+                        (notifId) => {
+                          linkMap[notifId] = stream.user_name // allows notification to be clicked with stream in new tab
+                        }
+                      )
+                    }
+                  })
                 }
               }
             })
@@ -79,5 +97,13 @@ import { getFollows } from './api/userFollows'
   function setLiveStreamIdsLocalStorage(streams) {
     const mappedStreamerIds = streams.map((stream) => stream)
     chrome.storage.local.set({ prevLiveStreams: mappedStreamerIds })
+  }
+
+  function getStoppedNotifications() {
+    chrome.storage.sync.get([NOTIFICATIONS], (response) => {
+      if (response[NOTIFICATIONS]) {
+        stoppedNotifications.push(...response[NOTIFICATIONS])
+      }
+    })
   }
 })()

@@ -1,18 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
 import LazyLoad from 'react-lazyload'
-import { TWITCH_TV } from '../../consts'
-import { useFavorites } from '../hooks/useFavoritesProvider'
-import { useNotification } from '../hooks/useNotificationsProvider'
 import { HiUserGroup } from 'react-icons/hi'
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs'
+import { MdNotificationsActive, MdNotificationsNone } from 'react-icons/md'
+import { TWITCH_TV } from '../../consts'
 import DropdownMenu from '../../components/dropdown-menu'
+import { useNotification } from '../hooks/useNotificationsProvider'
+import { useFavorites } from '../hooks/useFavoritesProvider'
 import { useTwitch } from '../hooks/useTwitchProvider'
-import Toggle from '../../components/toggle'
 
 const StyledProfileImage = styled.img``
 
-const MetaButtonContainer = styled.div``
+const MetaButtonContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+`
 
 const StyledUserName = styled.a`
   text-decoration: none;
@@ -75,7 +79,6 @@ const StyledStreamHeader = styled.div`
     place-self: center end;
   }
 `
-
 const StyledUl = styled.ul`
   list-style-type: none;
   display: grid;
@@ -98,7 +101,7 @@ const StreamInfo = ({ streamData }) => {
   const { favoriteStreams, setFavorites, removeFavorite } = useFavorites()
   const { handleDeleteFollow } = useTwitch()
   const { stoppedNotifications, startNotification, stopNotification } = useNotification()
-  console.log('stoppedNotifications', stoppedNotifications)
+  console.log('stoppedNotifications', stoppedNotifications, startNotification, stopNotification)
 
   const handleFavorite = (id) => {
     setFavorites(id)
@@ -169,18 +172,16 @@ const StreamInfo = ({ streamData }) => {
                     >
                       {favorited ? <BsBookmarkFill /> : <BsBookmark />}
                     </StyledMetaButton>
+                    <StyledMetaButton
+                      title={isNotificationOn(id) ? 'Turn Off Notification' : 'Turn On Notification'}
+                      onClick={() => handleNotificationToggle(id)}
+                    >
+                      {isNotificationOn(id) ? <MdNotificationsActive /> : <MdNotificationsNone />}
+                    </StyledMetaButton>
                     <DropdownMenu
                       menuItems={[{ text: 'Unfollow', handleOnClick: () => handleUnfollow(id) }]}
                       menuId={id}
-                    >
-                      <Toggle
-                        id={id}
-                        value={isNotificationOn(id)}
-                        onToggle={() => {
-                          handleNotificationToggle(id)
-                        }}
-                      />
-                    </DropdownMenu>
+                    />
                   </MetaButtonContainer>
                 </StyledStreamHeader>
               </StyledListItem>

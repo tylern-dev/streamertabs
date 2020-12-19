@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { HiOutlineHome, HiHome, HiSearch, HiOutlineSearch } from 'react-icons/hi'
 import { RiCameraLine, RiCameraOffLine, RiCameraOffFill, RiCameraFill, RiLogoutCircleRLine } from 'react-icons/ri'
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs'
-import { BiCog } from 'react-icons/bi'
+// import { BiCog } from 'react-icons/bi'
 const StyledNav = styled.nav`
   position: sticky;
   height: 502px;
@@ -50,13 +50,13 @@ const MenuContainer = styled.div`
 const Menu = ({ handleLogout }) => {
   const { pathname } = useLocation()
 
-  const handleGoToOptionsPage = () => {
-    if (chrome.runtime.openOptionsPage) {
-      chrome.runtime.openOptionsPage()
-    } else {
-      window.open(chrome.runtime.getURL('options.html'))
-    }
-  }
+  // const handleGoToOptionsPage = () => {
+  //   if (chrome.runtime.openOptionsPage) {
+  //     chrome.runtime.openOptionsPage()
+  //   } else {
+  //     window.open(chrome.runtime.getURL('options.html'))
+  //   }
+  // }
   return (
     <StyledNav>
       <MenuContainer>
@@ -84,9 +84,9 @@ const Menu = ({ handleLogout }) => {
           </StyledMenuButton>
         </Link>
         <StyledFunctionBtnContainer>
-          <StyledMenuButton title="Options" onClick={handleGoToOptionsPage}>
+          {/* <StyledMenuButton title="Options" onClick={handleGoToOptionsPage}>
             <BiCog />
-          </StyledMenuButton>
+          </StyledMenuButton> */}
           <StyledMenuButton title="Logout" onClick={() => handleLogout()}>
             <RiLogoutCircleRLine />
           </StyledMenuButton>

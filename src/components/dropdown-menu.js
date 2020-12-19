@@ -8,9 +8,10 @@ const StyledMetaButton = styled.button`
   background: none;
   outline: none;
   border: none;
-  font-size: 1.4em;
+  font-size: 1.2em;
   padding: 8px 16px;
   cursor: pointer;
+  width: 100%;
 
   :hover {
     text-decoration: underline;
@@ -21,6 +22,7 @@ const StyledEllipseButton = styled.button`
   background: none;
   outline: none;
   border: none;
+  padding: 0;
 `
 
 const MenuItemContainer = styled.div`
@@ -55,12 +57,12 @@ const DropdownMenu = ({ menuItems, loading, className, children }) => {
       </StyledEllipseButton>
       {isActive && menuItems.length > 0 && (
         <MenuItemContainer ref={dropdownRef}>
+          {children}
           {menuItems.map((btn, i) => (
             <StyledMetaButton key={i} onClick={() => btn.handleOnClick()}>
               {btn.text}
             </StyledMetaButton>
           ))}
-          {children}
         </MenuItemContainer>
       )}
     </DropdownMenuContainer>
