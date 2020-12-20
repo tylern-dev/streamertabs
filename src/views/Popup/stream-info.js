@@ -1,16 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
 import LazyLoad from 'react-lazyload'
-import { TWITCH_TV } from '../../consts'
-import { useFavorites } from '../hooks/useFavoritesProvider'
 import { HiUserGroup } from 'react-icons/hi'
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs'
+import { MdNotificationsActive, MdNotificationsNone } from 'react-icons/md'
+import { TWITCH_TV } from '../../consts'
 import DropdownMenu from '../../components/dropdown-menu'
+import { useNotification } from '../hooks/useNotificationsProvider'
+import { useFavorites } from '../hooks/useFavoritesProvider'
 import { useTwitch } from '../hooks/useTwitchProvider'
 
 const StyledProfileImage = styled.img``
 
-const MetaButtonContainer = styled.div``
+const MetaButtonContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+`
 
 const StyledUserName = styled.a`
   text-decoration: none;
@@ -73,7 +79,6 @@ const StyledStreamHeader = styled.div`
     place-self: center end;
   }
 `
-
 const StyledUl = styled.ul`
   list-style-type: none;
   display: grid;
@@ -95,6 +100,8 @@ const StyledImgLink = styled.a`
 const StreamInfo = ({ streamData }) => {
   const { favoriteStreams, setFavorites, removeFavorite } = useFavorites()
   const { handleDeleteFollow } = useTwitch()
+  const { stoppedNotifications, startNotification, stopNotification } = useNotification()
+  console.log('stoppedNotifications', stoppedNotifications, startNotification, stopNotification)
 
   const handleFavorite = (id) => {
     setFavorites(id)
@@ -108,6 +115,17 @@ const StreamInfo = ({ streamData }) => {
     handleDeleteFollow({ toId: id })
   }
 
+  const handleNotificationToggle = (id) => {
+    if (stoppedNotifications.includes(id)) {
+      startNotification(id)
+    } else {
+      stopNotification(id)
+    }
+  }
+
+  const isNotificationOn = (id) => {
+    return !stoppedNotifications.includes(id)
+  }
   return (
     <StyledUl>
       {streamData?.map(
@@ -153,6 +171,12 @@ const StreamInfo = ({ streamData }) => {
                       onClick={() => (favorited ? handleRemoveFavorite(id) : handleFavorite(id))}
                     >
                       {favorited ? <BsBookmarkFill /> : <BsBookmark />}
+                    </StyledMetaButton>
+                    <StyledMetaButton
+                      title={isNotificationOn(id) ? 'Turn Off Notification' : 'Turn On Notification'}
+                      onClick={() => handleNotificationToggle(id)}
+                    >
+                      {isNotificationOn(id) ? <MdNotificationsActive /> : <MdNotificationsNone />}
                     </StyledMetaButton>
                     <DropdownMenu
                       menuItems={[{ text: 'Unfollow', handleOnClick: () => handleUnfollow(id) }]}

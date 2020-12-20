@@ -42,8 +42,9 @@ const Favorites = () => {
     <StreamSection section="Favorites" count={liveFavorites.length}>
       {liveFavorites.length > 0 ? (
         <>
-          <StyledOpenAllFavorites onClick={() => handleOpenAllStreams()}>Open favorites</StyledOpenAllFavorites>
-          {/* <button onClick={() => clearAllFavorites()}>Clear all favorites</button> */}
+          <StyledOpenAllFavorites title="Open all favorite channels in tabs" onClick={() => handleOpenAllStreams()}>
+            Open all favorites
+          </StyledOpenAllFavorites>
         </>
       ) : (
         <Empty />

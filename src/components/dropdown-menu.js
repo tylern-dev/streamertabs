@@ -8,9 +8,10 @@ const StyledMetaButton = styled.button`
   background: none;
   outline: none;
   border: none;
-  font-size: 1.4em;
+  font-size: 1.2em;
   padding: 8px 16px;
   cursor: pointer;
+  width: 100%;
 
   :hover {
     text-decoration: underline;
@@ -21,6 +22,7 @@ const StyledEllipseButton = styled.button`
   background: none;
   outline: none;
   border: none;
+  padding: 0;
 `
 
 const MenuItemContainer = styled.div`
@@ -37,9 +39,10 @@ const MenuItemContainer = styled.div`
 const DropdownMenuContainer = styled.div`
   position: relative;
   display: inline-block;
+  z-index: 1;
 `
 
-const DropdownMenu = ({ menuItems, loading, className }) => {
+const DropdownMenu = ({ menuItems, loading, className, children }) => {
   const dropdownRef = useRef(null)
   const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false)
 
@@ -54,6 +57,7 @@ const DropdownMenu = ({ menuItems, loading, className }) => {
       </StyledEllipseButton>
       {isActive && menuItems.length > 0 && (
         <MenuItemContainer ref={dropdownRef}>
+          {children}
           {menuItems.map((btn, i) => (
             <StyledMetaButton key={i} onClick={() => btn.handleOnClick()}>
               {btn.text}

@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Link, useLocation } from 'react-router-dom'
 import { HiOutlineHome, HiHome, HiSearch, HiOutlineSearch } from 'react-icons/hi'
 import { RiCameraLine, RiCameraOffLine, RiCameraOffFill, RiCameraFill, RiLogoutCircleRLine } from 'react-icons/ri'
-import { useSearch } from '../hooks/useSearchProvider'
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs'
-
+// import { BiCog } from 'react-icons/bi'
 const StyledNav = styled.nav`
   position: sticky;
   height: 502px;
@@ -35,7 +34,9 @@ const StyledMenuButton = styled.button`
   }
 `
 
-const StyledLogOutButton = styled(StyledMenuButton)`
+const StyledFunctionBtnContainer = styled.div`
+  display: grid;
+  gap: 4px;
   margin-top: auto;
 `
 
@@ -48,15 +49,14 @@ const MenuContainer = styled.div`
 
 const Menu = ({ handleLogout }) => {
   const { pathname } = useLocation()
-  const { handleClearSearch, searchedTerm } = useSearch()
 
-  useEffect(() => {
-    if (pathname !== '/search' && searchedTerm) {
-      console.log('here in clear search')
-      handleClearSearch()
-    }
-  }, [handleClearSearch, pathname, searchedTerm])
-
+  // const handleGoToOptionsPage = () => {
+  //   if (chrome.runtime.openOptionsPage) {
+  //     chrome.runtime.openOptionsPage()
+  //   } else {
+  //     window.open(chrome.runtime.getURL('options.html'))
+  //   }
+  // }
   return (
     <StyledNav>
       <MenuContainer>
@@ -83,9 +83,14 @@ const Menu = ({ handleLogout }) => {
             {pathname === '/offline' ? <RiCameraOffFill /> : <RiCameraOffLine />}
           </StyledMenuButton>
         </Link>
-        <StyledLogOutButton onClick={() => handleLogout()}>
-          <RiLogoutCircleRLine />
-        </StyledLogOutButton>
+        <StyledFunctionBtnContainer>
+          {/* <StyledMenuButton title="Options" onClick={handleGoToOptionsPage}>
+            <BiCog />
+          </StyledMenuButton> */}
+          <StyledMenuButton title="Logout" onClick={() => handleLogout()}>
+            <RiLogoutCircleRLine />
+          </StyledMenuButton>
+        </StyledFunctionBtnContainer>
       </MenuContainer>
     </StyledNav>
   )
