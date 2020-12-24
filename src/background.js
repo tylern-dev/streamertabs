@@ -16,6 +16,7 @@ import { getFollows } from './api/userFollows'
   })
 
   chrome.alarms.onAlarm.addListener(() => {
+    getStoppedNotifications()
     chrome.storage.local.get(['userId'], (result) => {
       if (result?.userId) {
         getFollowsFromApi({ userId: result.userId })
@@ -43,7 +44,6 @@ import { getFollows } from './api/userFollows'
         } else {
           getStreamsFromApi({ userIds: userFollowsIds }).then((streams) => {
             const streamsFlattened = streams.flat()
-            console.log(streamsFlattened)
             chrome.storage.local.get(['prevLiveStreams'], (res) => {
               if (res?.prevLiveStreams) {
                 // compare the new live streams to the old one.
@@ -54,6 +54,7 @@ import { getFollows } from './api/userFollows'
                 if (newLiveStreams.length > 0) {
                   newLiveStreams.forEach((stream) => {
                     // if the id is in stoppedNotifications, don't create notification
+
                     if (!stoppedNotifications.includes(stream.user_id)) {
                       chrome.notifications.create(
                         {
