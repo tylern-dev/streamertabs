@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Twitch Tabs",
-  "version": "0.4.0",
-  "description": "Twitch Tabs allows you to open all of your favorite Twitch streamers in tabs",
+  "version": "0.4.1",
+  "description": "Twitch Tabs allows you to open all of your favorite Twitch streamers in tabs and get notified when they go online!",
   "permissions": [
     "identity",
     "storage",

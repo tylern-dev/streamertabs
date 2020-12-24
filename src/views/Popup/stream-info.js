@@ -101,7 +101,6 @@ const StreamInfo = ({ streamData }) => {
   const { favoriteStreams, setFavorites, removeFavorite } = useFavorites()
   const { handleDeleteFollow } = useTwitch()
   const { stoppedNotifications, startNotification, stopNotification } = useNotification()
-  console.log('stoppedNotifications', stoppedNotifications, startNotification, stopNotification)
 
   const handleFavorite = (id) => {
     setFavorites(id)
